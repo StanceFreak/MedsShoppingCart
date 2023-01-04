@@ -3,5 +3,5 @@
     <string name="product_name">nama_produk</string>
     <string name="product_status">status_produk</string>
     <string name="product_price">0</string>
-    <string name="price_currency">Rp </string>
+    <string name="product_selling_unit">unit_produk</string>
 </resources>

@@ -12,5 +12,6 @@
     <color name="darkblue_1">#FF233b43</color>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+    <color name="grey_1">#f3f4f5</color>
     <color name="shimmer_background">#DDDDDD</color>
 </resources>

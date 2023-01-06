@@ -6,9 +6,11 @@ import kotlinx.parcelize.Parcelize
 import android.os.Parcelable
 
 @Parcelize
-data class MedicineListModel(
-    @SerializedName("result")
-    val medicineList: List<MedicineList>,
-    @SerializedName("next_page")
-    val nextPage: Boolean,
+data class Category(
+    @SerializedName("external_id")
+    val externalId: String,
+    @SerializedName("slug")
+    val slug: String,
+    @SerializedName("name")
+    val name: String
 ) : Parcelable

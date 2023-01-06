@@ -6,7 +6,7 @@ import kotlinx.parcelize.Parcelize
 import android.os.Parcelable
 
 @Parcelize
-data class Result(
+data class MedicineList(
     @SerializedName("external_id")
     val externalId: String,
     @SerializedName("slug")

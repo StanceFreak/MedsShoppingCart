@@ -6,9 +6,7 @@ import android.view.View
 import android.widget.Toast
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
-import com.example.testing.R
 import com.example.testing.data.api.factory.ApiViewModelFactory
-import com.example.testing.data.api.network.Api
 import com.example.testing.data.api.network.ApiClient
 import com.example.testing.data.api.network.ApiHelper
 import com.example.testing.databinding.ActivityHomeBinding
@@ -55,7 +53,7 @@ class HomeActivity : AppCompatActivity() {
                         binding.shimmerPlaceholderContainer.visibility = View.GONE
                         binding.rvHome.visibility = View.VISIBLE
                         resource.data?.let { response ->
-                            medicineListAdapter.setData(response.result)
+                            medicineListAdapter.setData(response.medicineList)
                         }
                     }
                     Status.ERROR -> {

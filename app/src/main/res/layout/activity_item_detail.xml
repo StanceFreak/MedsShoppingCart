@@ -27,6 +27,8 @@
                 android:text="@string/product_name"
                 android:textSize="18sp"
                 android:textColor="@color/white"
+                android:maxLines="1"
+                android:ellipsize="end"
                 android:fontFamily="@font/epilogue_semibold_600"/>
 
         </androidx.appcompat.widget.Toolbar>
@@ -107,6 +109,7 @@
                     android:text="@string/product_name"
                     android:textSize="18sp"
                     android:textColor="@color/black"
+                    android:lineSpacingMultiplier="1.2"
                     android:fontFamily="@font/epilogue_regular_400"/>
 
             </LinearLayout>
@@ -169,6 +172,7 @@
                     android:text="@string/product_desc"
                     android:textSize="18sp"
                     android:textColor="@color/black"
+                    android:lineSpacingMultiplier="1.2"
                     android:fontFamily="@font/epilogue_regular_400"/>
 
                 <TextView
@@ -189,6 +193,7 @@
                     android:text="@string/product_general_indication"
                     android:textSize="18sp"
                     android:textColor="@color/black"
+                    android:lineSpacingMultiplier="1.2"
                     android:fontFamily="@font/epilogue_regular_400"/>
 
                 <TextView
@@ -209,6 +214,7 @@
                     android:text="@string/product_composition"
                     android:textSize="18sp"
                     android:textColor="@color/black"
+                    android:lineSpacingMultiplier="1.2"
                     android:fontFamily="@font/epilogue_regular_400"/>
 
                 <TextView
@@ -249,6 +255,7 @@
                     android:text="@string/product_how_to_use"
                     android:textSize="18sp"
                     android:textColor="@color/black"
+                    android:lineSpacingMultiplier="1.2"
                     android:fontFamily="@font/epilogue_regular_400"/>
 
                 <TextView
@@ -269,6 +276,7 @@
                     android:text="@string/product_warning"
                     android:textSize="18sp"
                     android:textColor="@color/black"
+                    android:lineSpacingMultiplier="1.2"
                     android:fontFamily="@font/epilogue_regular_400"/>
 
                 <TextView
@@ -289,6 +297,7 @@
                     android:text="@string/product_side_effects"
                     android:textSize="18sp"
                     android:textColor="@color/black"
+                    android:lineSpacingMultiplier="1.2"
                     android:fontFamily="@font/epilogue_regular_400"/>
 
                 <TextView
@@ -353,6 +362,7 @@
             android:layout_height="wrap_content"
             android:padding="15dp"
             android:text="@string/item_detail_add_to_cart_text"
+            android:textSize="17sp"
             android:fontFamily="@font/epilogue_semibold_600"
             android:textAllCaps="false"/>
 

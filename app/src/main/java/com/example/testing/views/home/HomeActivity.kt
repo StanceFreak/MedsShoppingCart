@@ -1,17 +1,20 @@
 package com.example.testing.views.home
 
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
 import android.widget.Toast
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
+import com.example.testing.R
 import com.example.testing.data.api.factory.ApiViewModelFactory
 import com.example.testing.data.api.network.ApiClient
 import com.example.testing.data.api.network.ApiHelper
 import com.example.testing.databinding.ActivityHomeBinding
 import com.example.testing.util.Status
 import com.example.testing.views.adapter.MedicineListAdapter
+import com.example.testing.views.cart.ShoppingCartActivity
 
 class HomeActivity : AppCompatActivity() {
 
@@ -25,6 +28,7 @@ class HomeActivity : AppCompatActivity() {
         binding = ActivityHomeBinding.inflate(layoutInflater)
         setupAdapter()
         setupApiCall()
+        setupToolbar()
         setContentView(binding.root)
     }
 
@@ -36,6 +40,19 @@ class HomeActivity : AppCompatActivity() {
                 2,
             )
             adapter = medicineListAdapter
+        }
+    }
+
+    private fun setupToolbar() {
+        binding.homeToolbar.inflateMenu(R.menu.menu_home)
+        binding.homeToolbar.setOnMenuItemClickListener {
+            when (it.itemId) {
+                R.id.home_cart -> {
+                    val i = Intent(this@HomeActivity, ShoppingCartActivity::class.java)
+                    startActivity(i)
+                }
+            }
+            return@setOnMenuItemClickListener true
         }
     }
 

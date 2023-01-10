@@ -111,6 +111,7 @@
                     android:layout_height="0dp"/>
 
                 <EditText
+                    android:id="@+id/item_cart_quantity"
                     android:layout_width="20dp"
                     android:layout_height="match_parent"
                     android:background="@null"

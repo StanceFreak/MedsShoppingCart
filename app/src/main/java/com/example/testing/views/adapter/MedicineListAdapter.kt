@@ -6,7 +6,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.example.testing.R
 import com.example.testing.databinding.RvHomeBinding
-import com.example.testing.data.api.model.MedicineList
+import com.example.testing.data.api.model.medicine.MedicineList
 import com.example.testing.views.detail.ItemDetailActivity
 import com.squareup.picasso.Picasso
 import java.text.NumberFormat

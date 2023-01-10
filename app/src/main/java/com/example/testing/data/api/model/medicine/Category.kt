@@ -1,4 +1,4 @@
-package com.example.testing.data.api.model
+package com.example.testing.data.api.model.medicine
 
 
 import com.google.gson.annotations.SerializedName

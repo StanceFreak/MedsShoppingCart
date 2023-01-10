@@ -1,7 +1,7 @@
 package com.example.testing.data.api.network
 
-import com.example.testing.data.api.model.MedicineDetail
-import com.example.testing.data.api.model.MedicineListModel
+import com.example.testing.data.api.model.medicine.MedicineDetail
+import com.example.testing.data.api.model.medicine.MedicineListModel
 import retrofit2.http.GET
 import retrofit2.http.Path
 

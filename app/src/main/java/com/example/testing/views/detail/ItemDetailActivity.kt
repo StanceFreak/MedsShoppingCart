@@ -1,5 +1,6 @@
 package com.example.testing.views.detail
 
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
@@ -8,19 +9,24 @@ import android.widget.Toast
 import androidx.lifecycle.ViewModelProvider
 import com.example.testing.R
 import com.example.testing.data.api.factory.ApiViewModelFactory
+import com.example.testing.data.api.model.shoppingCart.CartList
 import com.example.testing.data.api.network.Api
 import com.example.testing.data.api.network.ApiClient
 import com.example.testing.data.api.network.ApiHelper
 import com.example.testing.databinding.ActivityItemDetailBinding
 import com.example.testing.util.Status
+import com.example.testing.views.cart.ShoppingCartActivity
 import com.squareup.picasso.Picasso
 import java.text.NumberFormat
 import java.util.*
+import kotlin.collections.ArrayList
 
 class ItemDetailActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityItemDetailBinding
     private lateinit var viewModel: ItemDetailViewModel
+    private var cartData = ArrayList<CartList>()
+//    private val cartData: MutableList<CartList> = mutableListOf()
 
     companion object {
         const val ITEM_SLUG ="item_slug"
@@ -47,7 +53,6 @@ class ItemDetailActivity : AppCompatActivity() {
     }
 
     private fun setupApiCall() {
-
         val slug = intent.getStringExtra(ITEM_SLUG)!!
 
         viewModel = ViewModelProvider(
@@ -94,6 +99,24 @@ class ItemDetailActivity : AppCompatActivity() {
                                 itemDetailSideEffects.text = response.sideEffects
                                 itemDetailManufacturer.text = response.manufacturerName
                                 itemDetailBpomNumber.text = response.bpomNumber
+                                itemDetailBtnAddToCart.setOnClickListener {
+                                    cartData = arrayListOf()
+                                    val data = CartList(
+                                        slug = response.canonSlug,
+                                        name = response.name,
+                                        thumbnailUrl = response.thumbnailUrl,
+                                        minPrice = response.minPrice,
+                                        quantity = 1
+                                    )
+                                    cartData.add(data)
+                                    Log.d("testData", cartData.toString())
+                                    val i = Intent(
+                                        this@ItemDetailActivity,
+                                        ShoppingCartActivity::class.java
+                                    )
+//                                    i.putExtra(ShoppingCartActivity.ITEM_SLUG, response.canonSlug)
+                                    startActivity(i)
+                                }
                             }
 
                         }

@@ -28,6 +28,7 @@
         <activity
             android:name=".views.cart.ShoppingCartActivity"
             android:exported="false"
+            android:label=""
             android:theme="@style/AppTheme.NoActionBar">
             <meta-data
                 android:name="android.app.lib_name"

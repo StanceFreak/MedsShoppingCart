@@ -3,6 +3,7 @@ package com.example.testing.views.cart
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
+import android.widget.CompoundButton
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.testing.R
 import com.example.testing.data.api.model.shoppingCart.CartList
@@ -10,6 +11,8 @@ import com.example.testing.databinding.ActivityShoppingCartBinding
 import com.example.testing.views.adapter.ShoppingCartAdapter
 import com.google.firebase.database.*
 import com.google.firebase.database.ktx.getValue
+import java.text.NumberFormat
+import java.util.*
 
 class ShoppingCartActivity : AppCompatActivity() {
     private lateinit var binding: ActivityShoppingCartBinding
@@ -55,15 +58,40 @@ class ShoppingCartActivity : AppCompatActivity() {
         ref.addValueEventListener(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
                 val dataList : MutableList<CartList> = arrayListOf()
+                val localeID =  Locale("in", "ID")
+                val numberFormat = NumberFormat.getCurrencyInstance(localeID)
                 for (ds in snapshot.children) {
                     val data = ds.getValue<CartList>()
                     if (data != null) {
                         dataList.add(data)
                     }
                 }
-//                val data = snapshot.getValue<List<CartList>>()
                 Log.d("yoi", dataList.toString())
-                cartAdapter.setData(dataList)
+                cartAdapter.apply {
+                    setData(dataList)
+                    val totalPrice = getTotalPrice(dataList)
+                    binding.apply {
+                        cartTotalPrice.text = numberFormat.format(totalPrice)
+                            .replace("Rp", "Rp ")
+                            .replace(",00", "")
+                        cartCbSelectAll.setOnCheckedChangeListener(object : CompoundButton.OnCheckedChangeListener{
+                            override fun onCheckedChanged(p0: CompoundButton?, isChecked: Boolean) {
+                                if (isChecked) {
+                                    cartAdapter.cbSelectAll()
+                                }
+                                else {
+                                    cartAdapter.cbUnselectAll()
+                                }
+                            }
+                        })
+//                        if (cartCbSelectAll.isChecked) {
+//                            cartAdapter.cbSelectAll()
+//                        }
+//                        else {
+//                            cartAdapter.cbUnselectAll()
+//                        }
+                    }
+                }
             }
 
             override fun onCancelled(error: DatabaseError) {
@@ -71,7 +99,5 @@ class ShoppingCartActivity : AppCompatActivity() {
             }
 
         })
-//        Log.d("test2", )
-//        cartAdapter.setData(data)
     }
 }

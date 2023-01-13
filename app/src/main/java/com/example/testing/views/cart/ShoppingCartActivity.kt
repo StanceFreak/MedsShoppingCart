@@ -6,18 +6,20 @@ import android.util.Log
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.testing.R
 import com.example.testing.data.api.model.shoppingCart.CartList
-import com.example.testing.data.api.model.shoppingCart.UserCart
 import com.example.testing.databinding.ActivityShoppingCartBinding
 import com.example.testing.views.adapter.ShoppingCartAdapter
+import com.google.firebase.database.*
+import com.google.firebase.database.ktx.getValue
 
 class ShoppingCartActivity : AppCompatActivity() {
-
-//    companion object {
-//        const val ITEM_SLUG = "item_slug"
-//    }
     private lateinit var binding: ActivityShoppingCartBinding
     private lateinit var cartAdapter: ShoppingCartAdapter
-    private var data: List<CartList> = listOf()
+    private lateinit var db: FirebaseDatabase
+    private lateinit var ref: DatabaseReference
+
+    companion object {
+        const val FIREBASE_URL = "https://medsshoppingcart-default-rtdb.asia-southeast1.firebasedatabase.app/"
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -40,8 +42,9 @@ class ShoppingCartActivity : AppCompatActivity() {
     }
 
     private fun setupRecycler() {
+        db = FirebaseDatabase.getInstance(FIREBASE_URL)
+        ref = db.getReference("users")
         cartAdapter = ShoppingCartAdapter()
-
         binding.cartRv.apply {
             layoutManager = LinearLayoutManager(
                 this@ShoppingCartActivity,
@@ -49,7 +52,26 @@ class ShoppingCartActivity : AppCompatActivity() {
                 false)
             adapter = cartAdapter
         }
-        Log.d("test2", data.toString())
+        ref.addValueEventListener(object : ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                val dataList : MutableList<CartList> = arrayListOf()
+                for (ds in snapshot.children) {
+                    val data = ds.getValue<CartList>()
+                    if (data != null) {
+                        dataList.add(data)
+                    }
+                }
+//                val data = snapshot.getValue<List<CartList>>()
+                Log.d("yoi", dataList.toString())
+                cartAdapter.setData(dataList)
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+                TODO("Not yet implemented")
+            }
+
+        })
+//        Log.d("test2", )
 //        cartAdapter.setData(data)
     }
 }

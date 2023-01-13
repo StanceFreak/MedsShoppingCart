@@ -1,36 +1,37 @@
 package com.example.testing.views.detail
 
-import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import android.widget.Toast
 import androidx.lifecycle.ViewModelProvider
 import com.example.testing.R
 import com.example.testing.data.api.factory.ApiViewModelFactory
 import com.example.testing.data.api.model.shoppingCart.CartList
-import com.example.testing.data.api.network.Api
 import com.example.testing.data.api.network.ApiClient
 import com.example.testing.data.api.network.ApiHelper
 import com.example.testing.databinding.ActivityItemDetailBinding
 import com.example.testing.util.Status
-import com.example.testing.views.cart.ShoppingCartActivity
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.database.DatabaseReference
+import com.google.firebase.database.FirebaseDatabase
 import com.squareup.picasso.Picasso
 import java.text.NumberFormat
 import java.util.*
-import kotlin.collections.ArrayList
 
 class ItemDetailActivity : AppCompatActivity() {
 
+    companion object {
+        const val FIREBASE_URL = "https://medsshoppingcart-default-rtdb.asia-southeast1.firebasedatabase.app/"
+        const val ITEM_SLUG = "item_slug"
+    }
+
     private lateinit var binding: ActivityItemDetailBinding
     private lateinit var viewModel: ItemDetailViewModel
-    private var cartData = ArrayList<CartList>()
-//    private val cartData: MutableList<CartList> = mutableListOf()
-
-    companion object {
-        const val ITEM_SLUG ="item_slug"
-    }
+    private lateinit var firebaseAuth: FirebaseAuth
+    private lateinit var db: FirebaseDatabase
+    private lateinit var ref: DatabaseReference
+//    private var cartData: MutableList<CartList> = arrayListOf()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -53,8 +54,10 @@ class ItemDetailActivity : AppCompatActivity() {
     }
 
     private fun setupApiCall() {
+        db = FirebaseDatabase.getInstance(FIREBASE_URL)
+        ref = db.getReference("users")
+        firebaseAuth = FirebaseAuth.getInstance()
         val slug = intent.getStringExtra(ITEM_SLUG)!!
-
         viewModel = ViewModelProvider(
             this,
             ApiViewModelFactory(ApiHelper(ApiClient.instance))
@@ -100,7 +103,6 @@ class ItemDetailActivity : AppCompatActivity() {
                                 itemDetailManufacturer.text = response.manufacturerName
                                 itemDetailBpomNumber.text = response.bpomNumber
                                 itemDetailBtnAddToCart.setOnClickListener {
-                                    cartData = arrayListOf()
                                     val data = CartList(
                                         slug = response.canonSlug,
                                         name = response.name,
@@ -108,14 +110,34 @@ class ItemDetailActivity : AppCompatActivity() {
                                         minPrice = response.minPrice,
                                         quantity = 1
                                     )
-                                    cartData.add(data)
-                                    Log.d("testData", cartData.toString())
-                                    val i = Intent(
-                                        this@ItemDetailActivity,
-                                        ShoppingCartActivity::class.java
-                                    )
+                                    ref.child(getRandomId()).setValue(data)
+                                        .addOnCompleteListener { t ->
+                                            if (t.isSuccessful) {
+                                                Toast.makeText(
+                                                    this@ItemDetailActivity,
+                                                    "Berhasil menambahkan ke keranjang!",
+                                                    Toast.LENGTH_SHORT
+                                                ).show()
+                                            }
+                                            else {
+                                                Toast.makeText(
+                                                    this@ItemDetailActivity,
+                                                    "Gagal menambahkan ke keranjang!",
+                                                    Toast.LENGTH_SHORT
+                                                ).show()
+                                            }
+                                    }
+//                                    Log.d("testData", cartData.toString())
+//                                    val i = Intent(
+//                                        this@ItemDetailActivity,
+//                                        ShoppingCartActivity::class.java
+//                                    )
+//                                    i.putParcelableArrayListExtra(
+//                                        ShoppingCartActivity.ITEM_SLUG,
+//                                        cartData
+//                                    )
 //                                    i.putExtra(ShoppingCartActivity.ITEM_SLUG, response.canonSlug)
-                                    startActivity(i)
+//                                    startActivity(i)
                                 }
                             }
 
@@ -135,5 +157,11 @@ class ItemDetailActivity : AppCompatActivity() {
             }
         }
 
+    }
+
+    private fun getRandomId() : String {
+        val charset = ('a'..'z') + ('A'..'Z') + ('0'..'9')
+        return (1..10)
+            .map { charset.random() }.joinToString ("")
     }
 }

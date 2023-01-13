@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "357410950420",
+    "project_id": "medsshoppingcart",
+    "storage_bucket": "medsshoppingcart.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:357410950420:android:e64aaeffb8fc1adba18601",
+        "android_client_info": {
+          "package_name": "com.example.testing"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "357410950420-gu6je3od0smdekhb7mfm07puoc9e1vo1.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.testing",
+            "certificate_hash": "6c37195525492b89059e7504c7ae5e0044212757"
+          }
+        },
+        {
+          "client_id": "357410950420-1jv3oak4k6cup2nf5npn3bhjqdbtiurp.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBtnmSweTZltsUVonOfy4wT4TZiOTvcpkM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "357410950420-1jv3oak4k6cup2nf5npn3bhjqdbtiurp.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

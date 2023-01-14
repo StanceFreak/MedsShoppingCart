@@ -71,33 +71,27 @@ class ShoppingCartActivity : AppCompatActivity() {
                     setData(dataList)
                     val totalPrice = getTotalPrice(dataList)
                     binding.apply {
-                        cartTotalPrice.text = numberFormat.format(totalPrice)
-                            .replace("Rp", "Rp ")
-                            .replace(",00", "")
                         cartCbSelectAll.setOnCheckedChangeListener(object : CompoundButton.OnCheckedChangeListener{
                             override fun onCheckedChanged(p0: CompoundButton?, isChecked: Boolean) {
                                 if (isChecked) {
                                     cartAdapter.cbSelectAll()
+                                    cartTotalPrice.text = numberFormat.format(totalPrice)
+                                        .replace("Rp", "Rp ")
+                                        .replace(",00", "")
                                 }
                                 else {
                                     cartAdapter.cbUnselectAll()
+                                    cartTotalPrice.setText(R.string.product_price)
                                 }
                             }
                         })
-//                        if (cartCbSelectAll.isChecked) {
-//                            cartAdapter.cbSelectAll()
-//                        }
-//                        else {
-//                            cartAdapter.cbUnselectAll()
-//                        }
                     }
                 }
             }
 
             override fun onCancelled(error: DatabaseError) {
-                TODO("Not yet implemented")
+                Log.d("valListenerCancelled", "loadPost:onCancelled", error.toException())
             }
-
         })
     }
 }

@@ -1,37 +1,37 @@
 package com.example.testing.views.detail
 
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
 import android.widget.Toast
-import androidx.lifecycle.ViewModelProvider
+import androidx.activity.viewModels
+import com.example.testing.BuildConfig
 import com.example.testing.R
-import com.example.testing.data.api.factory.ApiViewModelFactory
 import com.example.testing.data.api.model.shoppingCart.CartList
-import com.example.testing.data.api.network.ApiClient
-import com.example.testing.data.api.network.ApiHelper
 import com.example.testing.databinding.ActivityItemDetailBinding
 import com.example.testing.util.Status
+import com.example.testing.views.cart.ShoppingCartActivity
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
 import com.squareup.picasso.Picasso
+import dagger.hilt.android.AndroidEntryPoint
 import java.text.NumberFormat
 import java.util.*
 
+@AndroidEntryPoint
 class ItemDetailActivity : AppCompatActivity() {
 
     companion object {
-        const val FIREBASE_URL = "https://medsshoppingcart-default-rtdb.asia-southeast1.firebasedatabase.app/"
         const val ITEM_SLUG = "item_slug"
     }
 
     private lateinit var binding: ActivityItemDetailBinding
-    private lateinit var viewModel: ItemDetailViewModel
+    private val viewModel: ItemDetailViewModel by viewModels()
     private lateinit var firebaseAuth: FirebaseAuth
     private lateinit var db: FirebaseDatabase
     private lateinit var ref: DatabaseReference
-//    private var cartData: MutableList<CartList> = arrayListOf()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -54,93 +54,81 @@ class ItemDetailActivity : AppCompatActivity() {
     }
 
     private fun setupApiCall() {
-        db = FirebaseDatabase.getInstance(FIREBASE_URL)
+        db = FirebaseDatabase.getInstance(BuildConfig.FIREBASE_URL)
         ref = db.getReference("users")
         firebaseAuth = FirebaseAuth.getInstance()
         val slug = intent.getStringExtra(ITEM_SLUG)!!
-        viewModel = ViewModelProvider(
-            this,
-            ApiViewModelFactory(ApiHelper(ApiClient.instance))
-        ).get(ItemDetailViewModel::class.java)
-
         viewModel.getMedicineById(slug).observe(this) {
             it?.let { resource ->
-                when(resource.status) {
+                when (resource.status) {
                     Status.SUCCESS -> {
                         binding.shimmerPlaceholderContainer.visibility = View.GONE
                         binding.itemDetailContent.visibility = View.VISIBLE
                         resource.data?.let { response ->
-                            val localeID =  Locale("in", "ID")
+                            val localeID = Locale("in", "ID")
                             val numberFormat = NumberFormat.getCurrencyInstance(localeID)
-                            Picasso.get()
-                                .load(response.thumbnailUrl)
-                                .placeholder(R.drawable.ic_image_placeholder)
-                                .into(binding.itemDetailThumbnail)
-                            binding.apply {
-                                if (response.name.contains(" - ")) {
-                                    itemDetailTitle.text = response.name
-                                        .substring(0, response.name.indexOf(" - "))
-                                    itemDetailName.text = response.name
-                                        .substring(0, response.name.indexOf(" - "))
-                                }
-                                else {
-                                    itemDetailTitle.text = response.name
-                                    itemDetailName.text = response.name
-                                }
-
-                                itemDetailPrice.text = numberFormat.format(response.minPrice)
-                                    .replace("Rp", "Rp ")
-                                    .replace(",00", "")
-                                itemDetailSellingUnit.text = response.sellingUnit
-                                itemDetailCategory.text = response.categories[0].name
-                                itemDetailDesc.text = response.description
-                                itemDetailGeneralIndication.text = response.generalIndication
-                                itemDetailComposition.text = response.composition
-                                itemDetailDosage.text = response.dosage
-                                itemDetailHowToUse.text = response.howToUse
-                                itemDetailWarning.text = response.warning
-                                itemDetailSideEffects.text = response.sideEffects
-                                itemDetailManufacturer.text = response.manufacturerName
-                                itemDetailBpomNumber.text = response.bpomNumber
-                                itemDetailBtnAddToCart.setOnClickListener {
-                                    val data = CartList(
-                                        slug = response.canonSlug,
-                                        name = response.name,
-                                        thumbnailUrl = response.thumbnailUrl,
-                                        minPrice = response.minPrice,
-                                        quantity = 1
-                                    )
-                                    ref.child(getRandomId()).setValue(data)
-                                        .addOnCompleteListener { t ->
-                                            if (t.isSuccessful) {
-                                                Toast.makeText(
-                                                    this@ItemDetailActivity,
-                                                    "Berhasil menambahkan ke keranjang!",
-                                                    Toast.LENGTH_SHORT
-                                                ).show()
-                                            }
-                                            else {
-                                                Toast.makeText(
-                                                    this@ItemDetailActivity,
-                                                    "Gagal menambahkan ke keranjang!",
-                                                    Toast.LENGTH_SHORT
-                                                ).show()
-                                            }
+                            if (response.body() != null) {
+                                Picasso.get()
+                                    .load(response.body()!!.thumbnailUrl)
+                                    .placeholder(R.drawable.ic_image_placeholder)
+                                    .into(binding.itemDetailThumbnail)
+                                binding.apply {
+                                    if (response.body()!!.name.contains(" - ")) {
+                                        itemDetailTitle.text = response.body()!!.name
+                                            .substring(0, response.body()!!.name.indexOf(" - "))
+                                        itemDetailName.text = response.body()!!.name
+                                            .substring(0, response.body()!!.name.indexOf(" - "))
+                                    } else {
+                                        itemDetailTitle.text = response.body()!!.name
+                                        itemDetailName.text = response.body()!!.name
                                     }
-//                                    Log.d("testData", cartData.toString())
-//                                    val i = Intent(
-//                                        this@ItemDetailActivity,
-//                                        ShoppingCartActivity::class.java
-//                                    )
-//                                    i.putParcelableArrayListExtra(
-//                                        ShoppingCartActivity.ITEM_SLUG,
-//                                        cartData
-//                                    )
-//                                    i.putExtra(ShoppingCartActivity.ITEM_SLUG, response.canonSlug)
-//                                    startActivity(i)
+
+                                    itemDetailPrice.text = numberFormat.format(response.body()!!.minPrice)
+                                        .replace("Rp", "Rp ")
+                                        .replace(",00", "")
+                                    itemDetailSellingUnit.text = response.body()!!.sellingUnit
+                                    itemDetailCategory.text = response.body()!!.categories[0].name
+                                    itemDetailDesc.text = response.body()?.description
+                                    itemDetailGeneralIndication.text = response.body()?.generalIndication
+                                    itemDetailComposition.text = response.body()?.composition
+                                    itemDetailDosage.text = response.body()?.dosage
+                                    itemDetailHowToUse.text = response.body()?.howToUse
+                                    itemDetailWarning.text = response.body()?.warning
+                                    itemDetailSideEffects.text = response.body()?.sideEffects
+                                    itemDetailManufacturer.text = response.body()?.manufacturerName
+                                    itemDetailBpomNumber.text = response.body()?.bpomNumber
+                                    itemDetailBtnAddToCart.setOnClickListener {
+                                        val data = CartList(
+                                            slug = response.body()?.canonSlug,
+                                            name = response.body()?.name,
+                                            thumbnailUrl = response.body()?.thumbnailUrl,
+                                            minPrice = response.body()?.minPrice,
+                                            quantity = 1
+                                        )
+                                        ref.child((getRandomId())).setValue(data)
+                                            .addOnCompleteListener { t ->
+                                                if (t.isSuccessful) {
+                                                    Toast.makeText(
+                                                        this@ItemDetailActivity,
+                                                        "Berhasil menambahkan ke keranjang!",
+                                                        Toast.LENGTH_SHORT
+                                                    ).show()
+                                                } else {
+                                                    Toast.makeText(
+                                                        this@ItemDetailActivity,
+                                                        "Gagal menambahkan ke keranjang!",
+                                                        Toast.LENGTH_SHORT
+                                                    ).show()
+                                                }
+                                            }
+                                    val i = Intent(
+                                        this@ItemDetailActivity,
+                                        ShoppingCartActivity::class.java
+                                    )
+                                    startActivity(i)
+                                    }
                                 }
                             }
-
                         }
                     }
                     Status.ERROR -> {
@@ -156,12 +144,11 @@ class ItemDetailActivity : AppCompatActivity() {
                 }
             }
         }
-
     }
 
-    private fun getRandomId() : String {
+    private fun getRandomId(): String {
         val charset = ('a'..'z') + ('A'..'Z') + ('0'..'9')
         return (1..10)
-            .map { charset.random() }.joinToString ("")
+            .map { charset.random() }.joinToString("")
     }
 }

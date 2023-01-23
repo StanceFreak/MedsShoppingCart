@@ -5,21 +5,20 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
 import android.widget.Toast
-import androidx.lifecycle.ViewModelProvider
+import androidx.activity.viewModels
 import androidx.recyclerview.widget.GridLayoutManager
 import com.example.testing.R
-import com.example.testing.data.api.factory.ApiViewModelFactory
-import com.example.testing.data.api.network.ApiClient
-import com.example.testing.data.api.network.ApiHelper
 import com.example.testing.databinding.ActivityHomeBinding
 import com.example.testing.util.Status
 import com.example.testing.views.adapter.MedicineListAdapter
 import com.example.testing.views.cart.ShoppingCartActivity
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class HomeActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityHomeBinding
-    private lateinit var viewModel: HomeViewModel
+    private val viewModel: HomeViewModel by viewModels()
     private lateinit var medicineListAdapter: MedicineListAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -57,12 +56,6 @@ class HomeActivity : AppCompatActivity() {
     }
 
     private fun setupApiCall() {
-
-        viewModel = ViewModelProvider(
-            this,
-            ApiViewModelFactory(ApiHelper(ApiClient.instance))
-        ).get(HomeViewModel::class.java)
-
         viewModel.getPenawaranSpecialMedicine().observe(this) {
             it?.let { resource ->
                 when(resource.status) {
@@ -70,7 +63,8 @@ class HomeActivity : AppCompatActivity() {
                         binding.shimmerPlaceholderContainer.visibility = View.GONE
                         binding.rvHome.visibility = View.VISIBLE
                         resource.data?.let { response ->
-                            medicineListAdapter.setData(response.medicineList)
+                            response.body()
+                                ?.let { it1 -> medicineListAdapter.setData(it1.medicineList) }
                         }
                     }
                     Status.ERROR -> {

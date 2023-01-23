@@ -40,6 +40,9 @@ class ShoppingCartAdapter: RecyclerView.Adapter<ShoppingCartAdapter.Recyclerview
                     .replace("Rp", "Rp ")
                     .replace(",00", "")
                 itemCartQuantity.setText(cartList.quantity.toString())
+                if (itemCartCb.isChecked) {
+
+                }
                 itemCartCb.isChecked = isCheckedAll
             }
         }
@@ -81,7 +84,6 @@ class ShoppingCartAdapter: RecyclerView.Adapter<ShoppingCartAdapter.Recyclerview
         var totalPrice = 0
         for (item in dataList) {
             totalPrice += item.minPrice!!
-
         }
         return totalPrice
     }

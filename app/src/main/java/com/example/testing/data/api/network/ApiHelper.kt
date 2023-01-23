@@ -2,15 +2,12 @@ package com.example.testing.data.api.network
 
 import com.example.testing.data.api.model.medicine.MedicineDetail
 import com.example.testing.data.api.model.medicine.MedicineListModel
+import retrofit2.Response
 
-class ApiHelper(private val api: Api) {
+interface ApiHelper {
 
-    suspend fun getPenawaranSpecialMedicine() : MedicineListModel {
-        return api.getPenawaranSpecialMedicine()
-    }
+    suspend fun getPenawaranSpecialMedicine() : Response<MedicineListModel>
 
-    suspend fun getMedicineById(slug: String) : MedicineDetail {
-        return api.getMedicineById(slug)
-    }
+    suspend fun getMedicineById(slug: String) : Response<MedicineDetail>
 
 }

@@ -120,6 +120,7 @@
             android:layout_height="wrap_content"
             android:text="@string/cart_checkout_text"
             android:textAllCaps="false"
+            android:textColor="@color/white"
             android:backgroundTint="@color/green_1"
             android:fontFamily="@font/epilogue_semibold_600"/>
 

@@ -53,7 +53,16 @@ class ShoppingCartAdapter: RecyclerView.Adapter<ShoppingCartAdapter.Recyclerview
                     .replace(",00", "")
                 itemCartQuantity.setText(cartList.quantity.toString())
                 itemCartCb.isChecked = isCheckedAll
-
+                itemCartCb.setOnClickListener {
+                    if (itemCartCb.isChecked) {
+                        checkedItemList.add(cartList.slug.toString())
+                        Log.d("checked", checkedItemList.size.toString())
+                    }
+                    else {
+                        checkedItemList.remove(cartList.slug.toString())
+                        Log.d("unchecked", checkedItemList.size.toString())
+                    }
+                }
                 itemCartAdd.setOnClickListener {
                     displayValue(binding.itemCartQuantity.text.toString().toInt() + 1)
                 }
@@ -120,13 +129,8 @@ class ShoppingCartAdapter: RecyclerView.Adapter<ShoppingCartAdapter.Recyclerview
         return totalPrice
     }
 
-    fun cbSelectAll() {
-        isCheckedAll = true
-        notifyDataSetChanged()
-    }
-
-    fun cbUnselectAll() {
-        isCheckedAll = false
+    fun getSelectAllState(state: Boolean) {
+        isCheckedAll = state
         notifyDataSetChanged()
     }
 

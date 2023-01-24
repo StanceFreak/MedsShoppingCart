@@ -13,6 +13,7 @@ import com.google.firebase.database.*
 import com.google.firebase.database.ktx.getValue
 import java.text.NumberFormat
 import java.util.*
+import kotlin.collections.ArrayList
 
 class ShoppingCartActivity : AppCompatActivity() {
     private lateinit var binding: ActivityShoppingCartBinding
@@ -66,7 +67,6 @@ class ShoppingCartActivity : AppCompatActivity() {
                         dataList.add(data)
                     }
                 }
-                Log.d("yoi", dataList.toString())
                 cartAdapter.apply {
                     setData(dataList)
                     val totalPrice = getTotalPrice(dataList)
@@ -74,13 +74,13 @@ class ShoppingCartActivity : AppCompatActivity() {
                         cartCbSelectAll.setOnCheckedChangeListener(object : CompoundButton.OnCheckedChangeListener{
                             override fun onCheckedChanged(p0: CompoundButton?, isChecked: Boolean) {
                                 if (isChecked) {
-                                    cartAdapter.cbSelectAll()
+                                    cartAdapter.getSelectAllState(true)
                                     cartTotalPrice.text = numberFormat.format(totalPrice)
                                         .replace("Rp", "Rp ")
                                         .replace(",00", "")
                                 }
                                 else {
-                                    cartAdapter.cbUnselectAll()
+                                    cartAdapter.getSelectAllState(false)
                                     cartTotalPrice.setText(R.string.product_price)
                                 }
                             }

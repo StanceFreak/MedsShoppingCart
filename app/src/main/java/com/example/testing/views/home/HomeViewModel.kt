@@ -1,12 +1,16 @@
 package com.example.testing.views.home
-
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.liveData
 import com.example.testing.data.api.repository.MedicineRepository
 import com.example.testing.util.Resource
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
+import javax.inject.Inject
 
-class HomeViewModel(private val medicineRepository: MedicineRepository) : ViewModel() {
+@HiltViewModel
+class HomeViewModel @Inject constructor (
+        private val medicineRepository: MedicineRepository
+    ) : ViewModel() {
 
     fun getPenawaranSpecialMedicine() = liveData(Dispatchers.IO) {
         emit(Resource.loading(data = null))

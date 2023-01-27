@@ -4,7 +4,6 @@ import android.content.Intent
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import android.widget.CompoundButton
 import android.widget.LinearLayout
 import androidx.recyclerview.widget.RecyclerView
 import com.example.testing.BuildConfig
@@ -19,7 +18,16 @@ import java.text.NumberFormat
 import java.util.*
 import kotlin.collections.ArrayList
 
-class ShoppingCartAdapter: RecyclerView.Adapter<ShoppingCartAdapter.RecyclerviewHolder>() {
+class ShoppingCartAdapter(
+    private val onRetrieveData: OnRetrieveData
+//    private val checkedItemsSize:(size: Int)->Unit,
+//    private val totalItem: (total: Int) -> Unit
+): RecyclerView.Adapter<ShoppingCartAdapter.RecyclerviewHolder>() {
+
+    interface OnRetrieveData {
+        fun checkedItemsSize (size: Int)
+        fun totalItem (total: Int)
+    }
 
     private var data = ArrayList<CartList>()
     private var checkedItemList = ArrayList<String>()
@@ -54,12 +62,30 @@ class ShoppingCartAdapter: RecyclerView.Adapter<ShoppingCartAdapter.Recyclerview
                 itemCartQuantity.setText(cartList.quantity.toString())
                 itemCartCb.isChecked = isCheckedAll
                 itemCartCb.setOnClickListener {
+//                    if (itemCartCb.isChecked == isCheckedAll) {
+//                        ref.addValueEventListener(object: ValueEventListener {
+//                            override fun onDataChange(snapshot: DataSnapshot) {
+//                                for (item in snapshot.children) {
+//                                    Log.d("fbListSize", item.childrenCount.toString())
+//                                    onRetrieveData.totalItem(item.childrenCount.toInt())
+//                                }
+//                            }
+//
+//                            override fun onCancelled(error: DatabaseError) {
+//                                Log.e("onCancelled", "onCancelled", error.toException())
+//                            }
+//
+//                        })
+//                    }
                     if (itemCartCb.isChecked) {
                         checkedItemList.add(cartList.slug.toString())
+                        onRetrieveData.checkedItemsSize(checkedItemList.size)
                         Log.d("checked", checkedItemList.size.toString())
                     }
                     else {
                         checkedItemList.remove(cartList.slug.toString())
+                        onRetrieveData.checkedItemsSize(checkedItemList.size)
+//                        checkedItemsSize.invoke(checkedItemList.size)
                         Log.d("unchecked", checkedItemList.size.toString())
                     }
                 }
@@ -84,7 +110,7 @@ class ShoppingCartAdapter: RecyclerView.Adapter<ShoppingCartAdapter.Recyclerview
                             }
 
                             override fun onCancelled(error: DatabaseError) {
-                                Log.e("onCancelled", "onCancelled", error.toException());
+                                Log.e("onCancelled", "onCancelled", error.toException())
                             }
 
                         })

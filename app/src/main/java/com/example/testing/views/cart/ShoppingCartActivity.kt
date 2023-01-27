@@ -15,7 +15,7 @@ import java.text.NumberFormat
 import java.util.*
 import kotlin.collections.ArrayList
 
-class ShoppingCartActivity : AppCompatActivity() {
+class ShoppingCartActivity : AppCompatActivity(), ShoppingCartAdapter.OnRetrieveData {
     private lateinit var binding: ActivityShoppingCartBinding
     private lateinit var cartAdapter: ShoppingCartAdapter
     private lateinit var db: FirebaseDatabase
@@ -32,7 +32,6 @@ class ShoppingCartActivity : AppCompatActivity() {
         setupRecycler()
         setContentView(binding.root)
     }
-
     private fun setupToolbar() {
         binding.cartToolbar.apply {
             setNavigationIcon(R.drawable.ic_back)
@@ -48,7 +47,7 @@ class ShoppingCartActivity : AppCompatActivity() {
     private fun setupRecycler() {
         db = FirebaseDatabase.getInstance(FIREBASE_URL)
         ref = db.getReference("users")
-        cartAdapter = ShoppingCartAdapter()
+        cartAdapter = ShoppingCartAdapter(this)
         binding.cartRv.apply {
             layoutManager = LinearLayoutManager(
                 this@ShoppingCartActivity,
@@ -94,4 +93,24 @@ class ShoppingCartActivity : AppCompatActivity() {
             }
         })
     }
+
+    override fun checkedItemsSize(size: Int) {
+        if (size != 0) {
+            binding.cartBtnCheckout.text = "Beli ($size)"
+        }
+        else {
+            binding.cartBtnCheckout.text = "Beli"
+        }
+    }
+
+    override fun totalItem(total: Int) {
+        if (total != 0) {
+            binding.cartBtnCheckout.text = "Beli ($total)"
+        }
+        else {
+            binding.cartBtnCheckout.text = "Beli"
+        }
+    }
+
+
 }

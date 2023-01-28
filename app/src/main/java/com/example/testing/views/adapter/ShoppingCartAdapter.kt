@@ -4,6 +4,7 @@ import android.content.Intent
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import android.widget.CompoundButton
 import android.widget.LinearLayout
 import androidx.recyclerview.widget.RecyclerView
 import com.example.testing.BuildConfig
@@ -13,6 +14,7 @@ import com.example.testing.databinding.RvCartBinding
 import com.example.testing.views.detail.ItemDetailActivity
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
+import com.google.firebase.database.ktx.getValue
 import com.squareup.picasso.Picasso
 import java.text.NumberFormat
 import java.util.*
@@ -32,6 +34,7 @@ class ShoppingCartAdapter(
     private var data = ArrayList<CartList>()
     private var checkedItemList = ArrayList<String>()
     private var isCheckedAll = false
+//    private val dataList : MutableList<CartList> = arrayListOf()
 
     inner class RecyclerviewHolder(private val binding: RvCartBinding) : RecyclerView.ViewHolder(binding.root) {
         private lateinit var firebaseAuth: FirebaseAuth
@@ -61,34 +64,70 @@ class ShoppingCartAdapter(
                     .replace(",00", "")
                 itemCartQuantity.setText(cartList.quantity.toString())
                 itemCartCb.isChecked = isCheckedAll
-                itemCartCb.setOnClickListener {
-//                    if (itemCartCb.isChecked == isCheckedAll) {
-//                        ref.addValueEventListener(object: ValueEventListener {
-//                            override fun onDataChange(snapshot: DataSnapshot) {
-//                                for (item in snapshot.children) {
-//                                    Log.d("fbListSize", item.childrenCount.toString())
-//                                    onRetrieveData.totalItem(item.childrenCount.toInt())
-//                                }
-//                            }
+
+//                if (itemCartCb.isChecked == isCheckedAll) {
+                ref.addValueEventListener(object: ValueEventListener {
+                    override fun onDataChange(snapshot: DataSnapshot) {
+                        val dataList : MutableList<CartList> = arrayListOf()
+                        itemCartCb.setOnCheckedChangeListener(object : CompoundButton.OnCheckedChangeListener {
+                            override fun onCheckedChanged(p0: CompoundButton?, isChecked: Boolean) {
+                                if (isChecked) {
+                                    checkedItemList.add(cartList.slug.toString())
+                                    onRetrieveData.checkedItemsSize(checkedItemList.size)
+                                    Log.d("checked", checkedItemList.size.toString())
+                                }
+                                else {
+                                    checkedItemList.remove(cartList.slug.toString())
+                                    onRetrieveData.checkedItemsSize(checkedItemList.size)
+                                    Log.d("unchecked", checkedItemList.size.toString())
+                                }
+                            }
+
+                        })
+                        for (item in snapshot.children) {
+                            val itemData = item.getValue<CartList>()
+                            if (itemCartCb.isChecked) {
+                                if (itemData != null) {
+                                    dataList.add(itemData)
+                                }
+//                                checkedItemList.add(cartList.slug.toString())
+//                                onRetrieveData.checkedItemsSize(checkedItemList.size)
+//                                Log.d("checked", checkedItemList.size.toString())
+                            }
+                            else {
+                                dataList.remove(itemData)
+//                                checkedItemList.remove(cartList.slug.toString())
+//                                onRetrieveData.checkedItemsSize(checkedItemList.size)
+//                                Log.d("unchecked", checkedItemList.size.toString())
+                            }
+                            Log.d("fbListSize", dataList.size.toString())
+                            onRetrieveData.totalItem(dataList.size)
+                        }
 //
-//                            override fun onCancelled(error: DatabaseError) {
-//                                Log.e("onCancelled", "onCancelled", error.toException())
-//                            }
-//
-//                        })
-//                    }
-                    if (itemCartCb.isChecked) {
-                        checkedItemList.add(cartList.slug.toString())
-                        onRetrieveData.checkedItemsSize(checkedItemList.size)
-                        Log.d("checked", checkedItemList.size.toString())
                     }
-                    else {
-                        checkedItemList.remove(cartList.slug.toString())
-                        onRetrieveData.checkedItemsSize(checkedItemList.size)
-//                        checkedItemsSize.invoke(checkedItemList.size)
-                        Log.d("unchecked", checkedItemList.size.toString())
+
+                    override fun onCancelled(error: DatabaseError) {
+                        Log.e("onCancelled", "onCancelled", error.toException())
                     }
-                }
+
+                })
+//                }
+                itemCartCb.setOnCheckedChangeListener(object : CompoundButton.OnCheckedChangeListener {
+                    override fun onCheckedChanged(p0: CompoundButton?, isChecked: Boolean) {
+                        if (isChecked) {
+                            checkedItemList.add(cartList.slug.toString())
+                            onRetrieveData.checkedItemsSize(checkedItemList.size)
+                            Log.d("checked", checkedItemList.size.toString())
+                        }
+                        else {
+                            checkedItemList.remove(cartList.slug.toString())
+                            onRetrieveData.checkedItemsSize(checkedItemList.size)
+                            Log.d("unchecked", checkedItemList.size.toString())
+                        }
+                    }
+
+                })
+
                 itemCartAdd.setOnClickListener {
                     displayValue(binding.itemCartQuantity.text.toString().toInt() + 1)
                 }

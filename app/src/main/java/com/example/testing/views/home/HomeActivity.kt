@@ -27,6 +27,7 @@ class HomeActivity : AppCompatActivity() {
         binding = ActivityHomeBinding.inflate(layoutInflater)
         setupAdapter()
         setupApiCall()
+        setupViews()
         setupToolbar()
         setContentView(binding.root)
     }
@@ -55,6 +56,14 @@ class HomeActivity : AppCompatActivity() {
         }
     }
 
+    private fun setupViews() {
+        binding.homeSwipeRefresh.setOnRefreshListener {
+            binding.homeSwipeRefresh.isRefreshing = false
+            setupApiCall()
+            medicineListAdapter.notifyDataSetChanged()
+        }
+    }
+
     private fun setupApiCall() {
         viewModel.getPenawaranSpecialMedicine().observe(this) {
             it?.let { resource ->
@@ -74,6 +83,7 @@ class HomeActivity : AppCompatActivity() {
                     }
                     Status.LOADING -> {
                         binding.shimmerPlaceholderContainer.visibility = View.VISIBLE
+                        binding.rvHome.visibility = View.GONE
                     }
                 }
             }

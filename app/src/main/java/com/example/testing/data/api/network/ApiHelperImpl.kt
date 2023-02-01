@@ -5,7 +5,8 @@ import com.example.testing.data.api.model.medicine.MedicineListModel
 import retrofit2.Response
 import javax.inject.Inject
 
-class ApiHelperImpl @Inject constructor(
+//class ApiHelperImpl @Inject constructor(
+class ApiHelperImpl(
     private val apiService: ApiService
 ): ApiHelper {
 

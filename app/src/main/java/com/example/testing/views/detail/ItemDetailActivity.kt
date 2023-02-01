@@ -17,10 +17,11 @@ import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
 import com.squareup.picasso.Picasso
 import dagger.hilt.android.AndroidEntryPoint
+import org.koin.androidx.viewmodel.ext.android.viewModel
 import java.text.NumberFormat
 import java.util.*
 
-@AndroidEntryPoint
+//@AndroidEntryPoint
 class ItemDetailActivity : AppCompatActivity() {
 
     companion object {
@@ -28,7 +29,7 @@ class ItemDetailActivity : AppCompatActivity() {
     }
 
     private lateinit var binding: ActivityItemDetailBinding
-    private val viewModel: ItemDetailViewModel by viewModels()
+    private val viewModel: ItemDetailViewModel by viewModel()
     private lateinit var firebaseAuth: FirebaseAuth
     private lateinit var db: FirebaseDatabase
     private lateinit var ref: DatabaseReference

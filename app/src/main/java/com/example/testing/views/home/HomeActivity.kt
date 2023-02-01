@@ -13,12 +13,13 @@ import com.example.testing.util.Status
 import com.example.testing.views.adapter.MedicineListAdapter
 import com.example.testing.views.cart.ShoppingCartActivity
 import dagger.hilt.android.AndroidEntryPoint
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
-@AndroidEntryPoint
+//@AndroidEntryPoint
 class HomeActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityHomeBinding
-    private val viewModel: HomeViewModel by viewModels()
+    private val viewModel: HomeViewModel by viewModel()
     private lateinit var medicineListAdapter: MedicineListAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {

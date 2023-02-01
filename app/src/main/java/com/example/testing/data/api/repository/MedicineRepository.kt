@@ -6,7 +6,10 @@ import com.example.testing.data.api.network.ApiHelper
 import retrofit2.Response
 import javax.inject.Inject
 
-class MedicineRepository @Inject constructor(private val apiHelper: ApiHelper) {
+//class MedicineRepository @Inject constructor(
+class MedicineRepository(
+    private val apiHelper: ApiHelper
+) {
 
     suspend fun getPenawaranSpecialMedicine() : Response<MedicineListModel> {
         return apiHelper.getPenawaranSpecialMedicine()

@@ -7,8 +7,9 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import javax.inject.Inject
 
-@HiltViewModel
-class HomeViewModel @Inject constructor (
+//@HiltViewModel
+//class HomeViewModel @Inject constructor (
+class HomeViewModel(
         private val medicineRepository: MedicineRepository
     ) : ViewModel() {
 

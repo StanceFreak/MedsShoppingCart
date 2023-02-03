@@ -16,7 +16,7 @@
     <string name="product_bpom_number">no_bpom_produk</string>
     <string name="cart_select_all">Pilih Semua</string>
     <string name="cart_total_price_text">Total Harga</string>
-    <string name="cart_checkout_text">Beli</string>
+    <string name="cart_checkout_text">Beli (0)</string>
     <string name="cart_title">Keranjang</string>
     <string name="item_cart_notes">Tulis Catatan</string>
     <string name="item_cart_decrement">-</string>

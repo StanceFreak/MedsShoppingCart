@@ -100,7 +100,7 @@
 
             <TextView
                 android:id="@+id/cart_total_price"
-                android:layout_width="wrap_content"
+                android:layout_width="130dp"
                 android:layout_height="wrap_content"
                 android:paddingTop="5dp"
                 android:text="@string/product_price"
@@ -110,19 +110,23 @@
 
         </LinearLayout>
 
-        <View
-            android:layout_width="170dp"
-            android:layout_height="match_parent"/>
-
-        <Button
-            android:id="@+id/cart_btn_checkout"
-            android:layout_width="125dp"
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/cart_checkout_text"
-            android:textAllCaps="false"
-            android:textColor="@color/white"
-            android:backgroundTint="@color/green_1"
-            android:fontFamily="@font/epilogue_semibold_600"/>
+            android:gravity="end"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/cart_btn_checkout"
+                android:layout_width="125dp"
+                android:layout_height="wrap_content"
+                android:text="@string/cart_checkout_text"
+                android:textAllCaps="false"
+                android:textColor="@color/white"
+                android:backgroundTint="@color/green_1"
+                android:fontFamily="@font/epilogue_semibold_600"/>
+
+        </LinearLayout>
 
     </LinearLayout>
 

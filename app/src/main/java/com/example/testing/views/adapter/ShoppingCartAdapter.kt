@@ -5,6 +5,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.CompoundButton
+import android.widget.ImageView
 import android.widget.LinearLayout
 import androidx.recyclerview.widget.RecyclerView
 import com.example.testing.BuildConfig
@@ -14,7 +15,6 @@ import com.example.testing.databinding.RvCartBinding
 import com.example.testing.views.detail.ItemDetailActivity
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
-import com.google.firebase.database.ktx.getValue
 import com.squareup.picasso.Picasso
 import java.text.NumberFormat
 import java.util.*
@@ -22,29 +22,26 @@ import kotlin.collections.ArrayList
 
 class ShoppingCartAdapter(
     private val onRetrieveData: OnRetrieveData
-//    private val checkedItemsSize:(size: Int)->Unit,
-//    private val totalItem: (total: Int) -> Unit
 ): RecyclerView.Adapter<ShoppingCartAdapter.RecyclerviewHolder>() {
 
     interface OnRetrieveData {
-        fun checkedItemsSize (size: Int)
-        fun totalItem (total: Int)
+        fun checkedItemsSize (size: Int, price: Int)
     }
 
     private var data = ArrayList<CartList>()
-    private var checkedItemList = ArrayList<String>()
     private var isCheckedAll = false
-//    private val dataList : MutableList<CartList> = arrayListOf()
+    private var itemQuantity = 0
+    private var itemPrice = 0
+    private var db = FirebaseDatabase.getInstance(BuildConfig.FIREBASE_URL)
+    private var ref = db.getReference("users")
 
-    inner class RecyclerviewHolder(private val binding: RvCartBinding) : RecyclerView.ViewHolder(binding.root) {
+    inner class RecyclerviewHolder(
+        private val binding: RvCartBinding,
+    ) : RecyclerView.ViewHolder(binding.root) {
         private lateinit var firebaseAuth: FirebaseAuth
-        private lateinit var db: FirebaseDatabase
-        private lateinit var ref: DatabaseReference
         fun bind(cartList: CartList) {
             val localeID =  Locale("in", "ID")
             val numberFormat = NumberFormat.getCurrencyInstance(localeID)
-            db = FirebaseDatabase.getInstance(BuildConfig.FIREBASE_URL)
-            ref = db.getReference("users")
             firebaseAuth = FirebaseAuth.getInstance()
             binding.apply {
                 Picasso.get()
@@ -64,68 +61,22 @@ class ShoppingCartAdapter(
                     .replace(",00", "")
                 itemCartQuantity.setText(cartList.quantity.toString())
                 itemCartCb.isChecked = isCheckedAll
-
-//                if (itemCartCb.isChecked == isCheckedAll) {
-                ref.addValueEventListener(object: ValueEventListener {
-                    override fun onDataChange(snapshot: DataSnapshot) {
-                        val dataList : MutableList<CartList> = arrayListOf()
-                        itemCartCb.setOnCheckedChangeListener(object : CompoundButton.OnCheckedChangeListener {
-                            override fun onCheckedChanged(p0: CompoundButton?, isChecked: Boolean) {
-                                if (isChecked) {
-                                    checkedItemList.add(cartList.slug.toString())
-                                    onRetrieveData.checkedItemsSize(checkedItemList.size)
-                                    Log.d("checked", checkedItemList.size.toString())
-                                }
-                                else {
-                                    checkedItemList.remove(cartList.slug.toString())
-                                    onRetrieveData.checkedItemsSize(checkedItemList.size)
-                                    Log.d("unchecked", checkedItemList.size.toString())
-                                }
-                            }
-
-                        })
-                        for (item in snapshot.children) {
-                            val itemData = item.getValue<CartList>()
-                            if (itemCartCb.isChecked) {
-                                if (itemData != null) {
-                                    dataList.add(itemData)
-                                }
-//                                checkedItemList.add(cartList.slug.toString())
-//                                onRetrieveData.checkedItemsSize(checkedItemList.size)
-//                                Log.d("checked", checkedItemList.size.toString())
-                            }
-                            else {
-                                dataList.remove(itemData)
-//                                checkedItemList.remove(cartList.slug.toString())
-//                                onRetrieveData.checkedItemsSize(checkedItemList.size)
-//                                Log.d("unchecked", checkedItemList.size.toString())
-                            }
-                            Log.d("fbListSize", dataList.size.toString())
-                            onRetrieveData.totalItem(dataList.size)
-                        }
-//
-                    }
-
-                    override fun onCancelled(error: DatabaseError) {
-                        Log.e("onCancelled", "onCancelled", error.toException())
-                    }
-
-                })
-//                }
                 itemCartCb.setOnCheckedChangeListener(object : CompoundButton.OnCheckedChangeListener {
                     override fun onCheckedChanged(p0: CompoundButton?, isChecked: Boolean) {
-                        if (isChecked) {
-                            checkedItemList.add(cartList.slug.toString())
-                            onRetrieveData.checkedItemsSize(checkedItemList.size)
-                            Log.d("checked", checkedItemList.size.toString())
-                        }
-                        else {
-                            checkedItemList.remove(cartList.slug.toString())
-                            onRetrieveData.checkedItemsSize(checkedItemList.size)
-                            Log.d("unchecked", checkedItemList.size.toString())
+                        val tempPrice = cartList.quantity?.let { cartList.minPrice?.times(it) }
+                        if (tempPrice != null) {
+                            if (isChecked) {
+                                itemQuantity += cartList.quantity
+                                itemPrice += tempPrice
+                                onRetrieveData.checkedItemsSize(itemQuantity, itemPrice)
+                            }
+                            else {
+                                itemQuantity -= cartList.quantity
+                                itemPrice -= tempPrice
+                                onRetrieveData.checkedItemsSize(itemQuantity, itemPrice)
+                            }
                         }
                     }
-
                 })
 
                 itemCartAdd.setOnClickListener {
@@ -138,21 +89,6 @@ class ShoppingCartAdapter(
                     else {
                         displayValue(binding.itemCartQuantity.text.toString().toInt())
                     }
-                }
-                itemCartDelete.setOnClickListener {
-                    ref.orderByChild("slug").equalTo(cartList.slug)
-                        .addValueEventListener(object: ValueEventListener {
-                            override fun onDataChange(snapshot: DataSnapshot) {
-                                for (item in snapshot.children) {
-                                    item.ref.removeValue()
-                                }
-                            }
-
-                            override fun onCancelled(error: DatabaseError) {
-                                Log.e("onCancelled", "onCancelled", error.toException())
-                            }
-
-                        })
                 }
             }
         }
@@ -172,26 +108,40 @@ class ShoppingCartAdapter(
     }
 
     override fun onBindViewHolder(holder: RecyclerviewHolder, position: Int) {
+        db = FirebaseDatabase.getInstance(BuildConfig.FIREBASE_URL)
+        ref = db.getReference("users")
         val data = this.data[position]
         holder.bind(data)
 
-        holder.itemView.findViewById<LinearLayout>(R.id.item_cart_container).setOnClickListener {
-            val i = Intent(holder.itemView.context, ItemDetailActivity::class.java)
-            i.putExtra(ItemDetailActivity.ITEM_SLUG, data.slug)
-            holder.itemView.context.startActivity(i)
+        holder.itemView.apply {
+            findViewById<ImageView>(R.id.item_cart_delete).setOnClickListener {
+                ref.orderByChild("slug").equalTo(data.slug)
+                    .addListenerForSingleValueEvent(object: ValueEventListener {
+                        override fun onDataChange(snapshot: DataSnapshot) {
+                            for (item in snapshot.children) {
+                                item.ref.removeValue()
+                                this@ShoppingCartAdapter.data.removeAt(holder.adapterPosition)
+                            }
+                            notifyItemRemoved(holder.adapterPosition)
+                            notifyItemRangeChanged(holder.adapterPosition, this@ShoppingCartAdapter.data.size)
+                        }
+
+                        override fun onCancelled(error: DatabaseError) {
+                            Log.e("onCancelled", "onCancelled", error.toException())
+                        }
+
+                    })
+            }
+            findViewById<LinearLayout>(R.id.item_cart_container).setOnClickListener {
+                val i = Intent(holder.itemView.context, ItemDetailActivity::class.java)
+                i.putExtra(ItemDetailActivity.ITEM_SLUG, data.slug)
+                holder.itemView.context.startActivity(i)
+            }
         }
     }
 
     override fun getItemCount(): Int {
         return this.data.size
-    }
-
-    fun getTotalPrice(dataList: List<CartList>) : Int {
-        var totalPrice = 0
-        for (item in dataList) {
-            totalPrice += item.minPrice!!
-        }
-        return totalPrice
     }
 
     fun getSelectAllState(state: Boolean) {

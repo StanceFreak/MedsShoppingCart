@@ -30,7 +30,6 @@ class ItemDetailActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityItemDetailBinding
     private val viewModel: ItemDetailViewModel by viewModel()
-    private lateinit var firebaseAuth: FirebaseAuth
     private lateinit var db: FirebaseDatabase
     private lateinit var ref: DatabaseReference
 
@@ -57,7 +56,6 @@ class ItemDetailActivity : AppCompatActivity() {
     private fun setupApiCall() {
         db = FirebaseDatabase.getInstance(BuildConfig.FIREBASE_URL)
         ref = db.getReference("users")
-        firebaseAuth = FirebaseAuth.getInstance()
         val slug = intent.getStringExtra(ITEM_SLUG)!!
         viewModel.getMedicineById(slug).observe(this) {
             it?.let { resource ->
@@ -106,7 +104,7 @@ class ItemDetailActivity : AppCompatActivity() {
                                             minPrice = response.body()?.minPrice,
                                             quantity = 1
                                         )
-                                        ref.child((getRandomId())).setValue(data)
+                                        ref.child(response.body()?.canonSlug!!).setValue(data)
                                             .addOnCompleteListener { t ->
                                                 if (t.isSuccessful) {
                                                     Toast.makeText(

@@ -15,6 +15,7 @@ import com.example.testing.databinding.RvCartBinding
 import com.example.testing.views.detail.ItemDetailActivity
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
+import com.google.firebase.database.ktx.getValue
 import com.squareup.picasso.Picasso
 import java.text.NumberFormat
 import java.util.*
@@ -32,6 +33,9 @@ class ShoppingCartAdapter(
     private var isCheckedAll = false
     private var itemQuantity = 0
     private var itemPrice = 0
+    private var tempPrice = 0
+    private var tempQuantity = 0
+    private var value = 0
     private var db = FirebaseDatabase.getInstance(BuildConfig.FIREBASE_URL)
     private var ref = db.getReference("users")
 
@@ -42,6 +46,7 @@ class ShoppingCartAdapter(
         fun bind(cartList: CartList) {
             val localeID =  Locale("in", "ID")
             val numberFormat = NumberFormat.getCurrencyInstance(localeID)
+            val etValue = binding.itemCartQuantity.text.toString().toInt()
             firebaseAuth = FirebaseAuth.getInstance()
             binding.apply {
                 Picasso.get()
@@ -63,31 +68,36 @@ class ShoppingCartAdapter(
                 itemCartCb.isChecked = isCheckedAll
                 itemCartCb.setOnCheckedChangeListener(object : CompoundButton.OnCheckedChangeListener {
                     override fun onCheckedChanged(p0: CompoundButton?, isChecked: Boolean) {
-                        val tempPrice = cartList.quantity?.let { cartList.minPrice?.times(it) }
-                        if (tempPrice != null) {
-                            if (isChecked) {
-                                itemQuantity += cartList.quantity
-                                itemPrice += tempPrice
-                                onRetrieveData.checkedItemsSize(itemQuantity, itemPrice)
-                            }
-                            else {
-                                itemQuantity -= cartList.quantity
-                                itemPrice -= tempPrice
-                                onRetrieveData.checkedItemsSize(itemQuantity, itemPrice)
-                            }
+                        tempPrice = cartList.quantity?.let { cartList.minPrice?.times(it) }!!
+                        if (isChecked) {
+                            itemQuantity += cartList.quantity
+                            itemPrice += tempPrice
+                            onRetrieveData.checkedItemsSize(itemQuantity, itemPrice)
+                        }
+                        else {
+                            itemQuantity -= cartList.quantity
+                            itemPrice -= tempPrice
+                            onRetrieveData.checkedItemsSize(itemQuantity, itemPrice)
                         }
                     }
                 })
 
                 itemCartAdd.setOnClickListener {
-                    displayValue(binding.itemCartQuantity.text.toString().toInt() + 1)
+                    value = binding.itemCartQuantity.text.toString().toInt().plus(1).coerceAtLeast(1)
+                    displayValue(value)
+                    cartList.slug?.let { it1 ->
+                        ref.child(cartList.slug).updateChildren(hashMapOf<String, Any>(
+                            "quantity" to value
+                        ))
+                    }
                 }
                 itemCartReduce.setOnClickListener {
-                    if (binding.itemCartQuantity.text.toString().toInt() > 1) {
-                        displayValue(binding.itemCartQuantity.text.toString().toInt() - 1)
-                    }
-                    else {
-                        displayValue(binding.itemCartQuantity.text.toString().toInt())
+                    value = binding.itemCartQuantity.text.toString().toInt().minus(1).coerceAtLeast(1)
+                    displayValue(value)
+                    cartList.slug?.let { it1 ->
+                        ref.child(cartList.slug).updateChildren(hashMapOf<String, Any>(
+                            "quantity" to value
+                        ))
                     }
                 }
             }

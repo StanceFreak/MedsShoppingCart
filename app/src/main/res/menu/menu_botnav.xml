@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item
+        android:title="@string/botnav_home_title"
+        android:id="@+id/botnav_home"
+        android:icon="@drawable/ic_home_outline"
+        app:showAsAction="ifRoom|collapseActionView"/>
+
+    <item
+        android:title="@string/botnav_home_title"
+        android:id="@+id/botnav_home1"
+        android:icon="@drawable/ic_home_outline"
+        app:showAsAction="always|collapseActionView"/>
+
+    <item
+        android:title="@string/botnav_home_title"
+        android:id="@+id/botnav_home2"
+        android:icon="@drawable/ic_home_outline"
+        app:showAsAction="always|collapseActionView"/>
+
+</menu>

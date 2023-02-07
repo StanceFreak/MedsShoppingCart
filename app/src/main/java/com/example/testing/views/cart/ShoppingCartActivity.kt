@@ -113,12 +113,12 @@ class ShoppingCartActivity : AppCompatActivity(), ShoppingCartAdapter.OnRetrieve
                 .replace(",00", "")
             Log.d("size", size.toString())
         }
-        if (price > 0) {
-            itemPrice = price
-            binding.cartTotalPrice.text = numberFormat.format(itemPrice)
-                .replace("Rp", "Rp ")
-                .replace(",00", "")
-        }
+//        if (price > 0) {
+//            itemPrice = price
+//            binding.cartTotalPrice.text = numberFormat.format(itemPrice)
+//                .replace("Rp", "Rp ")
+//                .replace(",00", "")
+//        }
         else {
             binding.cartBtnCheckout.text = "Beli (0)"
             binding.cartTotalPrice.setText(R.string.product_price)

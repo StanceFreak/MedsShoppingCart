@@ -9,6 +9,41 @@
         android:id="@+id/homeFragment"
         android:name="com.example.testing.views.home.HomeFragment"
         android:label="fragment_home"
-        tools:layout="@layout/fragment_home" />
+        tools:layout="@layout/fragment_home" >
+        <action
+            android:id="@+id/home_to_detail"
+            app:destination="@id/itemDetailFragment" />
+        <action
+            android:id="@+id/home_to_shopping"
+            app:destination="@id/shoppingCartFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/shoppingCartFragment"
+        android:name="com.example.testing.views.cart.ShoppingCartFragment"
+        android:label="fragment_shopping_cart"
+        tools:layout="@layout/fragment_shopping_cart" >
+        <action
+            android:id="@+id/shopping_to_home"
+            app:destination="@id/homeFragment" />
+        <action
+            android:id="@+id/shopping_to_detail"
+            app:destination="@id/itemDetailFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/itemDetailFragment"
+        android:name="com.example.testing.views.detail.ItemDetailFragment"
+        android:label="fragment_item_detail"
+        tools:layout="@layout/fragment_item_detail" >
+        <action
+            android:id="@+id/detail_to_shopping"
+            app:destination="@id/shoppingCartFragment" />
+        <action
+            android:id="@+id/detail_to_home"
+            app:destination="@id/homeFragment" />
+        <argument
+            android:name="item_slug"
+            app:argType="string"
+            android:defaultValue='' />
+    </fragment>
 
 </navigation>

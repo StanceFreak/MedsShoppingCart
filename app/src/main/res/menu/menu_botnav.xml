@@ -5,19 +5,19 @@
     <item
         android:title="@string/botnav_home_title"
         android:id="@+id/botnav_home"
-        android:icon="@drawable/ic_home_outline"
+        android:icon="@drawable/home_state_selector"
         app:showAsAction="ifRoom|collapseActionView"/>
 
     <item
-        android:title="@string/botnav_home_title"
-        android:id="@+id/botnav_home1"
-        android:icon="@drawable/ic_home_outline"
+        android:title="@string/botnav_wishlist_title"
+        android:id="@+id/botnav_wishlist"
+        android:icon="@drawable/wishlist_state_selector"
         app:showAsAction="always|collapseActionView"/>
 
     <item
-        android:title="@string/botnav_home_title"
-        android:id="@+id/botnav_home2"
-        android:icon="@drawable/ic_home_outline"
+        android:title="@string/botnav_profile_title"
+        android:id="@+id/botnav_profile"
+        android:icon="@drawable/profile_state_selector"
         app:showAsAction="always|collapseActionView"/>
 
 </menu>

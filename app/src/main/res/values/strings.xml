@@ -34,4 +34,7 @@
     <string name="item_detail_manufacturer_info">Manufaktur</string>
     <string name="item_detail_bpom_number_info">No. Registrasi</string>
     <string name="menu_cart_title">Shopping Cart</string>
+    <string name="botnav_home_title">Home</string>
+    <string name="botnav_profile_title">Profile</string>
+    <string name="botnav_wishlist_title">Wishlist</string>
 </resources>

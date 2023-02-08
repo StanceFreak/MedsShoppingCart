@@ -3,11 +3,12 @@ package com.example.testing.views.adapter
 import android.content.Intent
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.navigation.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import com.example.testing.R
 import com.example.testing.databinding.RvHomeBinding
 import com.example.testing.data.api.model.medicine.MedicineList
-import com.example.testing.views.detail.ItemDetailActivity
+import com.example.testing.views.home.HomeFragmentDirections
 import com.squareup.picasso.Picasso
 import java.text.NumberFormat
 import java.util.*
@@ -61,10 +62,9 @@ class MedicineListAdapter : RecyclerView.Adapter<MedicineListAdapter.Recyclervie
         val data = this.data[position]
         holder.bind(data)
 
-        holder.itemView.setOnClickListener{
-            val i = Intent(holder.itemView.context, ItemDetailActivity::class.java)
-            i.putExtra(ItemDetailActivity.ITEM_SLUG, data.slug)
-            holder.itemView.context.startActivity(i)
+        holder.itemView.setOnClickListener{ view ->
+            val argsData = HomeFragmentDirections.homeToDetail(data.slug)
+            view.findNavController().navigate(argsData)
         }
     }
 

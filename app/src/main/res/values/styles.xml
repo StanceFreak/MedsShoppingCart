@@ -17,4 +17,13 @@
         <item name="cornerFamily">rounded</item>
         <item name="cornerSize">10dp</item>
     </style>
+    
+    <style name="BotNavItemActive">
+        <item name="fontFamily">@font/epilogue_semibold_600</item>
+    </style>
+
+    <style name="BotNavItemInactive">
+        <item name="fontFamily">@font/epilogue_regular_400</item>
+    </style>
+
 </resources>

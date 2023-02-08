@@ -7,9 +7,11 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import com.example.testing.R
 import com.example.testing.databinding.ActivityHomeBinding
+import com.example.testing.databinding.FragmentHomeBinding
 import com.example.testing.util.Status
 import com.example.testing.views.adapter.MedicineListAdapter
 import com.example.testing.views.cart.ShoppingCartActivity
@@ -17,7 +19,7 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class HomeFragment : Fragment() {
 
-    private lateinit var binding: ActivityHomeBinding
+    private lateinit var binding: FragmentHomeBinding
     private val viewModel: HomeViewModel by viewModel()
     private lateinit var medicineListAdapter: MedicineListAdapter
 
@@ -33,7 +35,7 @@ class HomeFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        binding = ActivityHomeBinding.inflate(inflater, container, false)
+        binding = FragmentHomeBinding.inflate(inflater, container, false)
         return binding.root
     }
 
@@ -53,8 +55,9 @@ class HomeFragment : Fragment() {
         binding.homeToolbar.setOnMenuItemClickListener {
             when (it.itemId) {
                 R.id.home_cart -> {
-                    val i = Intent(requireContext(), ShoppingCartActivity::class.java)
-                    startActivity(i)
+                    findNavController().navigate(R.id.home_to_shopping)
+//                    val i = Intent(requireContext(), ShoppingCartActivity::class.java)
+//                    startActivity(i)
                 }
             }
             return@setOnMenuItemClickListener true

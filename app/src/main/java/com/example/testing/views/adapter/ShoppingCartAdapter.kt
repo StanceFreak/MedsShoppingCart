@@ -12,6 +12,7 @@ import com.example.testing.BuildConfig
 import com.example.testing.R
 import com.example.testing.data.api.model.shoppingCart.CartList
 import com.example.testing.databinding.RvCartBinding
+import com.example.testing.views.cart.ShoppingCartFragmentDirections
 import com.example.testing.views.detail.ItemDetailActivity
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
@@ -142,10 +143,9 @@ class ShoppingCartAdapter(
 
                     })
             }
-            findViewById<LinearLayout>(R.id.item_cart_container).setOnClickListener {
-                val i = Intent(holder.itemView.context, ItemDetailActivity::class.java)
-                i.putExtra(ItemDetailActivity.ITEM_SLUG, data.slug)
-                holder.itemView.context.startActivity(i)
+            findViewById<LinearLayout>(R.id.item_cart_container).setOnClickListener { view ->
+                val argsData = ShoppingCartFragmentDirections.shoppingToDetail(data.slug!!)
+                view.findNavController().navigate(argsData)
             }
         }
     }

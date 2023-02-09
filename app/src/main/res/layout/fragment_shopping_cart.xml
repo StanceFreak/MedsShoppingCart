@@ -23,8 +23,7 @@
             android:layout_height="wrap_content"
             android:minHeight="?attr/actionBarSize"
             android:theme="?attr/actionBarTheme"
-            app:layout_scrollFlags="scroll|enterAlways|snap"
-            app:navigationIcon="@drawable/ic_back">
+            app:layout_scrollFlags="scroll|enterAlways|snap">
 
             <TextView
                 android:layout_width="wrap_content"

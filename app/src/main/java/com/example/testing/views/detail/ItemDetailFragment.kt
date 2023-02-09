@@ -61,8 +61,7 @@ class ItemDetailFragment : Fragment() {
         }
 
         binding.itemDetailToolbar.setNavigationOnClickListener {
-            view?.let { it1 -> Navigation.findNavController(it1).navigate(R.id.detail_to_home) }
-//            (activity as AppCompatActivity).onBackPressed()
+            (activity as AppCompatActivity).onBackPressed()
         }
     }
 

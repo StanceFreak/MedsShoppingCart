@@ -54,7 +54,7 @@ class ShoppingCartFragment : Fragment(), ShoppingCartAdapter.OnRetrieveData {
 //
 //        })
         binding = FragmentShoppingCartBinding.inflate(inflater, container, false)
-        return inflater.inflate(R.layout.fragment_shopping_cart, container, false)
+        return binding.root
     }
 
     private fun setupToolbar() {
@@ -67,7 +67,6 @@ class ShoppingCartFragment : Fragment(), ShoppingCartAdapter.OnRetrieveData {
         }
 
         binding.cartToolbar.setNavigationOnClickListener {
-//            view?.let { it1 -> Navigation.findNavController(it1).navigate(R.id.shopping_to_home) }
             (activity as AppCompatActivity).onBackPressed()
         }
     }

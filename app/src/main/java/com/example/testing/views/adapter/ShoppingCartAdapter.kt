@@ -1,22 +1,20 @@
 package com.example.testing.views.adapter
 
-import android.content.Intent
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.CompoundButton
 import android.widget.ImageView
 import android.widget.LinearLayout
+import androidx.navigation.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import com.example.testing.BuildConfig
 import com.example.testing.R
 import com.example.testing.data.api.model.shoppingCart.CartList
 import com.example.testing.databinding.RvCartBinding
 import com.example.testing.views.cart.ShoppingCartFragmentDirections
-import com.example.testing.views.detail.ItemDetailActivity
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
-import com.google.firebase.database.ktx.getValue
 import com.squareup.picasso.Picasso
 import java.text.NumberFormat
 import java.util.*
@@ -32,11 +30,8 @@ class ShoppingCartAdapter(
 
     private var data = ArrayList<CartList>()
     private var isCheckedAll = false
-    private var itemQuantity = 0
-    private var itemPrice = 0
-    private var tempPrice = 0
-    private var tempQuantity = 0
-    private var value = 0
+    private var itemQuantityTotal = 0
+    private var itemPriceTotal = 0
     private var db = FirebaseDatabase.getInstance(BuildConfig.FIREBASE_URL)
     private var ref = db.getReference("users")
 
@@ -47,7 +42,7 @@ class ShoppingCartAdapter(
         fun bind(cartList: CartList) {
             val localeID =  Locale("in", "ID")
             val numberFormat = NumberFormat.getCurrencyInstance(localeID)
-            val etValue = binding.itemCartQuantity.text.toString().toInt()
+            var value: Int
             firebaseAuth = FirebaseAuth.getInstance()
             binding.apply {
                 Picasso.get()
@@ -69,33 +64,57 @@ class ShoppingCartAdapter(
                 itemCartCb.isChecked = isCheckedAll
                 itemCartCb.setOnCheckedChangeListener(object : CompoundButton.OnCheckedChangeListener {
                     override fun onCheckedChanged(p0: CompoundButton?, isChecked: Boolean) {
-                        tempPrice = cartList.quantity?.let { cartList.minPrice?.times(it) }!!
-                        if (isChecked) {
-                            itemQuantity += cartList.quantity
-                            itemPrice += tempPrice
-                            onRetrieveData.checkedItemsSize(itemQuantity, itemPrice)
-                        }
-                        else {
-                            itemQuantity -= cartList.quantity
-                            itemPrice -= tempPrice
-                            onRetrieveData.checkedItemsSize(itemQuantity, itemPrice)
-                        }
+                        ref.child(cartList.slug!!).addListenerForSingleValueEvent(object : ValueEventListener {
+                            override fun onDataChange(snapshot: DataSnapshot) {
+                                val itemData = snapshot.getValue(CartList::class.java)
+                                Log.d("shoppingData", itemData.toString())
+                                value = binding.itemCartQuantity.text.toString().toInt()
+                                if (itemData != null) {
+                                    val tempPrice = itemData.quantity?.times(itemData.minPrice!!)!!
+                                    if (isChecked) {
+                                        itemQuantityTotal += itemData.quantity
+                                        itemPriceTotal += tempPrice
+                                        onRetrieveData.checkedItemsSize(itemQuantityTotal, itemPriceTotal)
+                                    }
+                                    else {
+                                        itemQuantityTotal -= itemData.quantity
+                                        itemPriceTotal -= tempPrice
+                                        onRetrieveData.checkedItemsSize(itemQuantityTotal, itemPriceTotal)
+                                    }
+                                }
+                            }
+
+                            override fun onCancelled(error: DatabaseError) {
+                                TODO("Not yet implemented")
+                            }
+
+                        })
                     }
                 })
 
                 itemCartAdd.setOnClickListener {
-                    value = binding.itemCartQuantity.text.toString().toInt().plus(1).coerceAtLeast(1)
-                    displayValue(value)
-                    cartList.slug?.let { it1 ->
+                    itemCartCb.isChecked = true
+                    value = binding.itemCartQuantity.text.toString().toInt().coerceAtLeast(1)
+                    val plusQuan = value.plus(1).coerceAtLeast(1)
+                    itemQuantityTotal += 1
+                    itemPriceTotal += cartList.minPrice!!
+                    displayValue(plusQuan)
+                    onRetrieveData.checkedItemsSize(itemQuantityTotal, itemPriceTotal)
+                    cartList.slug?.let { _ ->
                         ref.child(cartList.slug).updateChildren(hashMapOf<String, Any>(
                             "quantity" to value
                         ))
                     }
                 }
                 itemCartReduce.setOnClickListener {
-                    value = binding.itemCartQuantity.text.toString().toInt().minus(1).coerceAtLeast(1)
-                    displayValue(value)
-                    cartList.slug?.let { it1 ->
+                    itemCartCb.isChecked = true
+                    value = binding.itemCartQuantity.text.toString().toInt().coerceAtLeast(1)
+                    val minusQuan = value.minus(1).coerceAtLeast(1)
+                    itemQuantityTotal -= 1
+                    itemPriceTotal -= cartList.minPrice!!
+                    displayValue(minusQuan)
+                    onRetrieveData.checkedItemsSize(itemQuantityTotal, itemPriceTotal)
+                    cartList.slug?.let { _ ->
                         ref.child(cartList.slug).updateChildren(hashMapOf<String, Any>(
                             "quantity" to value
                         ))

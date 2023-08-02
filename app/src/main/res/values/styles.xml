@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+    <style name="AppTheme" parent="Theme.MaterialComponents.Light.DarkActionBar">
 
-        <item name="colorPrimary">@color/green_1</item>
+        <item name="colorPrimary">@color/midnight_green</item>
         <item name="colorPrimaryDark">@color/black</item>
-        <item name="colorAccent">@color/green_2</item>
+        <item name="colorAccent">@color/dark_gray</item>
 
     </style>
 

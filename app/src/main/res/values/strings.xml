@@ -37,4 +37,28 @@
     <string name="botnav_home_title">Home</string>
     <string name="botnav_profile_title">Profile</string>
     <string name="botnav_wishlist_title">Wishlist</string>
+    <string name="user_name">nama_user</string>
+    <string name="user_email">email_user</string>
+    <string name="profile_children_label">Label</string>
+    <string name="profile_item_name">nama_item</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="tv_login_greeting_title">Masuk</string>
+    <string name="tv_login_greeting_subtitle">Nikmati layanan kami dengan gratis</string>
+    <string name="tv_login_forgot_pass_label">Lupa kata sandi?</string>
+    <string name="tv_login_footer_label">Belum memiliki akun?</string>
+    <string name="tv_login_footer_register">Daftar sekarang</string>
+    <string name="tv_register_greeting_title">Daftar</string>
+    <string name="tv_register_greeting_subtitle">Buat akun dengan mengisi data dibawah</string>
+    <string name="tv_register_name_label">Nama</string>
+    <string name="tv_register_email_label">Email</string>
+    <string name="tv_register_pass_label">Kata sandi</string>
+    <string name="tv_register_conf_pass_label">Konfirmasi kata sandi</string>
+    <string name="et_register_name_hint">Masukkan nama</string>
+    <string name="et_register_email_hint">Masukkan Email</string>
+    <string name="et_register_pass_hint">Masukkan kata sandi</string>
+    <string name="et_register_conf_pass_hint">Masukkan ulang kata sandi</string>
+    <string name="btn_register_label">Daftar</string>
+    <string name="tv_register_footer_label">Sudah memiliki akun?</string>
+    <string name="tv_register_footer_login">Masuk</string>
 </resources>

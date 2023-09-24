@@ -1,33 +1,33 @@
 package com.example.testing.views.home
 
-import android.content.Intent
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
+import androidx.core.view.isGone
 import androidx.navigation.fragment.findNavController
-import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.testing.R
-import com.example.testing.databinding.ActivityHomeBinding
+import com.example.testing.data.api.model.response.HomeParentResponse
 import com.example.testing.databinding.FragmentHomeBinding
-import com.example.testing.util.Status
-import com.example.testing.views.adapter.MedicineListAdapter
-import com.example.testing.views.cart.ShoppingCartActivity
-import org.koin.androidx.viewmodel.ext.android.viewModel
+import com.example.testing.views.adapter.HomeParentAdapter
+import com.example.testing.views.adapter.HomeSliderPromoAdapter
+import com.smarteist.autoimageslider.SliderView
+import org.koin.android.ext.android.inject
 
+//@AndroidEntryPoint
 class HomeFragment : Fragment() {
-
     private lateinit var binding: FragmentHomeBinding
-    private val viewModel: HomeViewModel by viewModel()
-    private lateinit var medicineListAdapter: MedicineListAdapter
+    private val viewModel: HomeViewModel by inject()
+    private val parentData = ArrayList<HomeParentResponse>()
+    private lateinit var homeParentAdapter: HomeParentAdapter
+    private lateinit var homeSliderPromoAdapter: HomeSliderPromoAdapter
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         setupAdapter()
-        setupApiCall()
         setupViews()
-        setupToolbar()
+        observeData()
         super.onViewCreated(view, savedInstanceState)
     }
 
@@ -40,58 +40,115 @@ class HomeFragment : Fragment() {
     }
 
     private fun setupAdapter() {
-        medicineListAdapter = MedicineListAdapter()
-        binding.rvHome.apply {
-            layoutManager = GridLayoutManager(
-                requireContext(),
-                2,
-            )
-            adapter = medicineListAdapter
-        }
-    }
-
-    private fun setupToolbar() {
-        binding.homeToolbar.inflateMenu(R.menu.menu_home)
-        binding.homeToolbar.setOnMenuItemClickListener {
-            when (it.itemId) {
-                R.id.home_cart -> {
-                    findNavController().navigate(R.id.home_to_shopping)
-//                    val i = Intent(requireContext(), ShoppingCartActivity::class.java)
-//                    startActivity(i)
-                }
+        homeParentAdapter = HomeParentAdapter()
+        homeSliderPromoAdapter = HomeSliderPromoAdapter()
+        binding.apply {
+            svSliderHome.apply {
+                autoCycleDirection = SliderView.LAYOUT_DIRECTION_LTR
+                setIndicatorEnabled(true)
+                indicatorSelectedColor = resources.getColor(R.color.dark_gray)
+                indicatorUnselectedColor = resources.getColor(R.color.french_gray)
+                setSliderAdapter(homeSliderPromoAdapter)
+                scrollTimeInSec = 3
+                isAutoCycle = true
+                startAutoCycle()
             }
-            return@setOnMenuItemClickListener true
+            rvParentHome.apply {
+                layoutManager = LinearLayoutManager(
+                    requireContext(),
+                    LinearLayoutManager.VERTICAL,
+                    false
+                )
+                adapter = homeParentAdapter
+            }
         }
     }
 
     private fun setupViews() {
-        binding.homeSwipeRefresh.setOnRefreshListener {
-            binding.homeSwipeRefresh.isRefreshing = false
-            setupApiCall()
-            medicineListAdapter.notifyDataSetChanged()
+        binding.apply {
+            parentData.clear()
+            viewModel.getHomeData()
+            homeSwipeRefresh.setOnRefreshListener {
+                homeSwipeRefresh.isRefreshing = false
+                homeSliderPromoAdapter.notifyDataSetChanged()
+                homeParentAdapter.notifyDataSetChanged()
+            }
+            ivCartHome.setOnClickListener {
+                findNavController().navigate(R.id.home_to_shopping)
+            }
         }
     }
 
-    private fun setupApiCall() {
-        viewModel.getPenawaranSpecialMedicine().observe(viewLifecycleOwner) {
-            it?.let { resource ->
-                when(resource.status) {
-                    Status.SUCCESS -> {
-                        binding.shimmerPlaceholderContainer.visibility = View.GONE
-                        binding.rvHome.visibility = View.VISIBLE
-                        resource.data?.let { response ->
-                            response.body()
-                                ?.let { it1 -> medicineListAdapter.setData(it1.medicineList) }
+    private fun observeData() {
+        val responseData = ArrayList<HomeParentResponse>()
+        binding.apply {
+            viewModel.apply {
+                observeGetOfferSuccess().observe(viewLifecycleOwner) {
+                    it.getContentIfNotHandled()?.let { response ->
+                        homeSliderPromoAdapter.setData(response.medicineList)
+                        svSliderHome.setInfiniteAdapterEnabled(true)
+                        ivForwardPromoHome.setOnClickListener {
+                            val bundle = Bundle()
+                            bundle.putString("pathData", "penawaran-special")
+                            bundle.putString("labelData", "Penawaran Spesial")
+                            findNavController().navigate(R.id.home_to_see_all, bundle)
                         }
                     }
-                    Status.ERROR -> {
-                        binding.shimmerPlaceholderContainer.stopShimmer()
-                        binding.shimmerPlaceholderContainer.visibility = View.INVISIBLE
-                        Toast.makeText(requireContext(), it.message, Toast.LENGTH_LONG).show()
+                }
+                observeGetParentingSuccess().observe(viewLifecycleOwner) {
+                    it.getContentIfNotHandled()?.let { response ->
+                        responseData.add(HomeParentResponse("Kebutuhan Ibu & Anak", "ibu-dan-anak", 1,  response.medicineList, null))
+                        parentData.clear()
+                        parentData.addAll(responseData)
+                        homeParentAdapter.setData(parentData)
                     }
-                    Status.LOADING -> {
-                        binding.shimmerPlaceholderContainer.visibility = View.VISIBLE
-                        binding.rvHome.visibility = View.GONE
+                }
+                observeGetDiabetSuccess().observe(viewLifecycleOwner) {
+                    it.getContentIfNotHandled()?.let { response ->
+                        responseData.add(HomeParentResponse("Perawatan Diabetes", "diabetes-medicine", 1,  response.medicineList, null))
+                        parentData.clear()
+                        parentData.addAll(responseData)
+                        homeParentAdapter.setData(parentData)
+                    }
+                }
+                observeGetTrendingArticlesSuccess().observe(viewLifecycleOwner) {
+                    it.getContentIfNotHandled()?.let { response ->
+                        responseData.add(HomeParentResponse("Artikel Terkini", null, 2, null, response))
+                        parentData.clear()
+                        parentData.addAll(responseData)
+                        homeParentAdapter.setData(parentData)
+                    }
+                }
+                observeGetOfferLoading().observe(viewLifecycleOwner) {
+                    it.getContentIfNotHandled()?.let { loading ->
+                        if (loading) {
+                            tvTitlePromoHome.isGone = true
+                            ivForwardPromoHome.isGone = true
+                            svSliderHome.isGone = true
+                            shimmerLoadingSliderContainer.isGone = false
+                        }
+                        else {
+                            tvTitlePromoHome.isGone = false
+                            ivForwardPromoHome.isGone = false
+                            svSliderHome.isGone = false
+                            shimmerLoadingSliderContainer.isGone = true
+                        }
+                    }
+                }
+                observeGetParentingLoading().observe(viewLifecycleOwner) {
+                    it.getContentIfNotHandled()?.let { loading ->
+                        rvParentHome.isGone = loading
+                        shimmerLoadingMedMomContainer.isGone = !loading
+                    }
+                }
+                observeGetDiabetLoading().observe(viewLifecycleOwner) {
+                    it.getContentIfNotHandled()?.let { loading ->
+                        shimmerLoadingMedDiabetContainer.isGone = !loading
+                    }
+                }
+                observeGetTrendingArticlesLoading().observe(viewLifecycleOwner) {
+                    it.getContentIfNotHandled()?.let { loading ->
+                        shimmerLoadingArticleContainer.isGone = !loading
                     }
                 }
             }

@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <TextView
+        android:id="@+id/tv_error_load"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="Koneksi terputus"
+        android:textColor="@color/midnight_green"
+        android:textSize="14sp"
+        android:visibility="gone"
+        android:fontFamily="@font/epilogue_semibold_600"
+        android:gravity="center"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"/>
+
+    <Button
+        android:id="@+id/btn_error_load"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/tv_error_load"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        android:layout_marginHorizontal="10dp"
+        android:layout_marginTop="5dp"
+        android:visibility="gone"
+        android:padding="10dp"
+        android:text="Coba Lagi"
+        android:textSize="14sp"
+        android:textColor="@color/white"
+        android:textAllCaps="false"
+        android:fontFamily="@font/barlow_medium"
+        android:backgroundTint="@color/midnight_green"/>
+
+    <ProgressBar
+        android:id="@+id/pb_loading_load"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:layout_marginVertical="15dp"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        android:theme="@style/CustomColorProgressBar"/>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -3,11 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/nav_graph"
-    app:startDestination="@+id/loginFragment">
-
-<!--    <include app:graph="@navigation/nav_home"/>-->
-<!--    <include app:graph="@navigation/nav_profile"/>-->
-<!--    <include app:graph="@navigation/nav_wishlist"/>-->
+    app:startDestination="@+id/splashFragment">
 
     <fragment
         android:id="@+id/homeFragment"
@@ -20,6 +16,9 @@
         <action
             android:id="@+id/home_to_shopping"
             app:destination="@id/shoppingCartFragment" />
+        <action
+            android:id="@+id/home_to_see_all"
+            app:destination="@id/seeAllFragment" />
     </fragment>
     <fragment
         android:id="@+id/shoppingCartFragment"
@@ -32,6 +31,9 @@
         <action
             android:id="@+id/shopping_to_detail"
             app:destination="@id/itemDetailFragment" />
+        <action
+            android:id="@+id/shopping_to_confirmation"
+            app:destination="@id/shoppingConfirmationFragment" />
     </fragment>
     <fragment
         android:id="@+id/itemDetailFragment"
@@ -44,10 +46,6 @@
         <action
             android:id="@+id/detail_to_home"
             app:destination="@id/homeFragment" />
-        <argument
-            android:name="item_slug"
-            app:argType="string"
-            android:defaultValue='' />
     </fragment>
     <fragment
         android:id="@+id/loginFragment"
@@ -59,7 +57,9 @@
             app:destination="@id/registerFragment" />
         <action
             android:id="@+id/login_to_home"
-            app:destination="@id/homeFragment" />
+            app:destination="@id/homeFragment"
+            app:popUpTo="@id/loginFragment"
+            app:popUpToInclusive="true"/>
     </fragment>
     <fragment
         android:id="@+id/registerFragment"
@@ -68,7 +68,44 @@
         tools:layout="@layout/fragment_register" >
         <action
             android:id="@+id/regis_to_login"
-            app:destination="@id/loginFragment" />
+            app:destination="@id/loginFragment"
+            app:popUpTo="@id/registerFragment"
+            app:popUpToInclusive="true"/>
     </fragment>
+    <fragment
+        android:id="@+id/splashFragment"
+        android:name="com.example.testing.views.splash.SplashFragment"
+        android:label="SplashFragment" >
+        <action
+            android:id="@+id/splash_to_login"
+            app:destination="@id/loginFragment"
+            app:popUpTo="@id/splashFragment"
+            app:popUpToInclusive="true"/>
+        <action
+            android:id="@+id/splash_to_home"
+            app:destination="@id/homeFragment"
+            app:popUpTo="@id/splashFragment"
+            app:popUpToInclusive="true"/>
+    </fragment>
+    <fragment
+        android:id="@+id/wishlistFragment"
+        android:name="com.example.testing.views.wishlist.WishlistFragment"
+        android:label="fragment_wishlist"
+        tools:layout="@layout/fragment_wishlist" />
+    <fragment
+        android:id="@+id/profileFragment"
+        android:name="com.example.testing.views.profile.ProfileFragment"
+        android:label="fragment_profile"
+        tools:layout="@layout/fragment_profile" />
+    <fragment
+        android:id="@+id/seeAllFragment"
+        android:name="com.example.testing.views.seeall.SeeAllFragment"
+        android:label="fragment_see_all"
+        tools:layout="@layout/fragment_see_all" />
+    <fragment
+        android:id="@+id/shoppingConfirmationFragment"
+        android:name="com.example.testing.views.confirmation.ShoppingConfirmationFragment"
+        android:label="fragment_shopping_confirmation"
+        tools:layout="@layout/fragment_shopping_confirmation" />
 
 </navigation>

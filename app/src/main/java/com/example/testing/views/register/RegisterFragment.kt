@@ -3,20 +3,31 @@ package com.example.testing.views.register
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.EditText
+import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.core.util.PatternsCompat
 import androidx.navigation.fragment.findNavController
+import com.example.testing.BuildConfig
 import com.example.testing.R
+import com.example.testing.data.api.model.request.UserRegisterRequest
 import com.example.testing.databinding.FragmentRegisterBinding
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
+import com.google.firebase.database.DatabaseReference
+import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.ValueEventListener
 
 class RegisterFragment : Fragment() {
 
     private lateinit var binding: FragmentRegisterBinding
+    private lateinit var database: FirebaseDatabase
+    private lateinit var ref: DatabaseReference
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -33,13 +44,72 @@ class RegisterFragment : Fragment() {
 
     private fun setupViews() {
         binding.apply {
+            database = FirebaseDatabase.getInstance(BuildConfig.FIREBASE_URL)
+            ref = database.getReference("users")
             inputValidation(etRegisterName)
             inputValidation(etRegisterEmail)
             inputValidation(etRegisterPass)
             inputValidation(etRegisterConfPass)
 
-            tvRegisterLogin.setOnClickListener {
-                findNavController().navigate(R.id.regis_to_login)
+            btnRegister.setOnClickListener {
+                val id= ref.child("users").push().key
+                val name = etRegisterName.text.toString().trim()
+                val email = etRegisterEmail.text.toString().trim()
+                val pass = etRegisterPass.text.toString().trim()
+
+                if (!validateName() && !validateEmail() &&
+                    !validatePass() && !validateConfPass()) {
+                    Toast.makeText(
+                        requireContext(),
+                        "Silahkan cek kembali inputan anda!",
+                        Toast.LENGTH_LONG
+                    ).show()
+                }
+                else {
+                    if (email.isNotEmpty()) {
+                        ref.orderByChild("email").equalTo(email).addListenerForSingleValueEvent(
+                            object : ValueEventListener {
+                                override fun onDataChange(snapshot: DataSnapshot) {
+                                    if (snapshot.exists()) {
+                                        Toast.makeText(
+                                            requireContext(),
+                                            "Email sudah digunakan, silahkan gunakan Email yang lain!",
+                                            Toast.LENGTH_LONG
+                                        ).show()
+                                    }
+                                    else {
+                                        if (id != null) {
+                                            val reg = UserRegisterRequest(id, name, email, pass)
+                                            ref.child(id).child("profile").setValue(reg).addOnCompleteListener {
+                                                if (it.isSuccessful) {
+                                                    Toast.makeText(
+                                                        requireContext(),
+                                                        "Akun berhasil terbuat",
+                                                        Toast.LENGTH_LONG
+                                                    ).show()
+                                                    findNavController().navigate(R.id.regis_to_login)
+                                                }
+                                                else {
+                                                    Toast.makeText(
+                                                        requireContext(),
+                                                        "Terjadi kesalahan, silahkan coba lagi!",
+                                                        Toast.LENGTH_LONG
+                                                    ).show()
+                                                }
+                                            }.addOnFailureListener {
+                                                Log.e("onCancelled", it.toString())
+                                            }
+                                        }
+                                    }
+                                }
+                                override fun onCancelled(error: DatabaseError) {
+                                    Log.w("onCancelled", error.toException())
+                                }
+
+                            }
+                        )
+                    }
+                }
             }
         }
     }

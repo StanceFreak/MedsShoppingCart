@@ -26,4 +26,8 @@
         <item name="fontFamily">@font/epilogue_regular_400</item>
     </style>
 
+    <style name="CustomColorProgressBar">
+        <item name="colorAccent">@color/midnight_green</item>
+    </style>
+
 </resources>

@@ -2,7 +2,6 @@ package com.example.testing.di
 
 import com.example.testing.BuildConfig
 import com.example.testing.data.api.network.ApiHelper
-import com.example.testing.data.api.network.ApiHelperImpl
 import com.example.testing.data.api.network.ApiService
 import dagger.Module
 import dagger.Provides
@@ -27,23 +26,19 @@ private fun providesOkHttpClient(httpLoggingInterceptor: HttpLoggingInterceptor)
         .build()
 
 private fun provideRetrofit(okHttpClient: OkHttpClient): Retrofit = Retrofit.Builder()
-    .baseUrl(BuildConfig.BASE_URL)
+    .baseUrl(BuildConfig.BASE_URL) // for testing on emulator
+//    .baseUrl("http://192.168.1.106:3000") // for testing on physical device
     .client(okHttpClient)
     .addConverterFactory(GsonConverterFactory.create())
     .build()
 
 private fun provideApiService(retrofit: Retrofit): ApiService = retrofit.create(ApiService::class.java)
-
-//private fun provideApiHelper(apiHelperImpl: ApiHelperImpl): ApiHelper = apiHelperImpl
-
 val networkModule = module {
     single{ provideHttpLoggingInterceptor() }
     single { providesOkHttpClient(get()) }
     single { provideRetrofit(get()) }
     single { provideApiService(get()) }
-    single<ApiHelper> {
-        ApiHelperImpl(get())
-    }
+    single { ApiHelper(get()) }
 }
 
 //@Module

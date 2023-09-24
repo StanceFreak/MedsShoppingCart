@@ -1,13 +1,24 @@
 package com.example.testing.data.api.network
 
-import com.example.testing.data.api.model.medicine.MedicineDetail
-import com.example.testing.data.api.model.medicine.MedicineListModel
+import com.example.testing.data.api.model.response.ArticlesResponse
+import com.example.testing.data.api.model.response.MedicineDetail
+import com.example.testing.data.api.model.response.MedicineListModel
 import retrofit2.Response
 
-interface ApiHelper {
+class ApiHelper (
+    private val service: ApiService
+): ApiService {
 
-    suspend fun getPenawaranSpecialMedicine() : Response<MedicineListModel>
+    override suspend fun getMedicineByCategory(path: String, page: Int) : Response<MedicineListModel> {
+        return service.getMedicineByCategory(path, page)
+    }
 
-    suspend fun getMedicineById(slug: String) : Response<MedicineDetail>
+    override suspend fun getArticlesTrending(): Response<ArticlesResponse> {
+        return service.getArticlesTrending()
+    }
+
+    override suspend fun getMedicineById(slug: String) : Response<MedicineDetail> {
+        return service.getMedicineById(slug)
+    }
 
 }

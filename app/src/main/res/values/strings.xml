@@ -2,7 +2,7 @@
     <string name="app_name">testing</string>
     <string name="product_name">nama_produk</string>
     <string name="product_status">status_produk</string>
-    <string name="product_price">-</string>
+    <string name="product_price">Rp99.999.999</string>
     <string name="product_selling_unit">unit_produk</string>
     <string name="product_category">kategori_produk</string>
     <string name="product_desc">deskripsi_produk</string>
@@ -61,4 +61,5 @@
     <string name="btn_register_label">Daftar</string>
     <string name="tv_register_footer_label">Sudah memiliki akun?</string>
     <string name="tv_register_footer_login">Masuk</string>
+    <string name="lorem">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Culpa cupiditate deserunt dolor dolorum ducimus, eligendi esse est expedita itaque laboriosam libero neque perferendis quidem sint, temporibus tenetur ut. Consequatur, culpa.</string>
 </resources>

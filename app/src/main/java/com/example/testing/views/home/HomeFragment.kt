@@ -1,6 +1,7 @@
 package com.example.testing.views.home
 
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -22,7 +23,6 @@ class HomeFragment : Fragment() {
     private val viewModel: HomeViewModel by inject()
     private val parentData = ArrayList<HomeParentResponse>()
     private lateinit var homeParentAdapter: HomeParentAdapter
-    private lateinit var homeSliderPromoAdapter: HomeSliderPromoAdapter
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         setupAdapter()
@@ -41,18 +41,7 @@ class HomeFragment : Fragment() {
 
     private fun setupAdapter() {
         homeParentAdapter = HomeParentAdapter()
-        homeSliderPromoAdapter = HomeSliderPromoAdapter()
         binding.apply {
-            svSliderHome.apply {
-                autoCycleDirection = SliderView.LAYOUT_DIRECTION_LTR
-                setIndicatorEnabled(true)
-                indicatorSelectedColor = resources.getColor(R.color.dark_gray)
-                indicatorUnselectedColor = resources.getColor(R.color.french_gray)
-                setSliderAdapter(homeSliderPromoAdapter)
-                scrollTimeInSec = 3
-                isAutoCycle = true
-                startAutoCycle()
-            }
             rvParentHome.apply {
                 layoutManager = LinearLayoutManager(
                     requireContext(),
@@ -70,7 +59,6 @@ class HomeFragment : Fragment() {
             viewModel.getHomeData()
             homeSwipeRefresh.setOnRefreshListener {
                 homeSwipeRefresh.isRefreshing = false
-                homeSliderPromoAdapter.notifyDataSetChanged()
                 homeParentAdapter.notifyDataSetChanged()
             }
             ivCartHome.setOnClickListener {
@@ -85,14 +73,11 @@ class HomeFragment : Fragment() {
             viewModel.apply {
                 observeGetOfferSuccess().observe(viewLifecycleOwner) {
                     it.getContentIfNotHandled()?.let { response ->
-                        homeSliderPromoAdapter.setData(response.medicineList)
-                        svSliderHome.setInfiniteAdapterEnabled(true)
-                        ivForwardPromoHome.setOnClickListener {
-                            val bundle = Bundle()
-                            bundle.putString("pathData", "penawaran-special")
-                            bundle.putString("labelData", "Penawaran Spesial")
-                            findNavController().navigate(R.id.home_to_see_all, bundle)
-                        }
+                        responseData.add(HomeParentResponse("Penawaran Spesial", "penawaran-special", 3,  response.medicineList, null))
+                        parentData.clear()
+                        parentData.addAll(responseData)
+                        homeParentAdapter.setData(parentData, 3)
+//                        homeParentAdapter.setDataSlider(parentData, 3)
                     }
                 }
                 observeGetParentingSuccess().observe(viewLifecycleOwner) {
@@ -100,7 +85,7 @@ class HomeFragment : Fragment() {
                         responseData.add(HomeParentResponse("Kebutuhan Ibu & Anak", "ibu-dan-anak", 1,  response.medicineList, null))
                         parentData.clear()
                         parentData.addAll(responseData)
-                        homeParentAdapter.setData(parentData)
+                        homeParentAdapter.setData(parentData, 1)
                     }
                 }
                 observeGetDiabetSuccess().observe(viewLifecycleOwner) {
@@ -108,7 +93,7 @@ class HomeFragment : Fragment() {
                         responseData.add(HomeParentResponse("Perawatan Diabetes", "diabetes-medicine", 1,  response.medicineList, null))
                         parentData.clear()
                         parentData.addAll(responseData)
-                        homeParentAdapter.setData(parentData)
+                        homeParentAdapter.setData(parentData, 1)
                     }
                 }
                 observeGetTrendingArticlesSuccess().observe(viewLifecycleOwner) {
@@ -116,28 +101,18 @@ class HomeFragment : Fragment() {
                         responseData.add(HomeParentResponse("Artikel Terkini", null, 2, null, response))
                         parentData.clear()
                         parentData.addAll(responseData)
-                        homeParentAdapter.setData(parentData)
+                        homeParentAdapter.setData(parentData, 2)
                     }
                 }
                 observeGetOfferLoading().observe(viewLifecycleOwner) {
                     it.getContentIfNotHandled()?.let { loading ->
-                        if (loading) {
-                            tvTitlePromoHome.isGone = true
-                            ivForwardPromoHome.isGone = true
-                            svSliderHome.isGone = true
-                            shimmerLoadingSliderContainer.isGone = false
-                        }
-                        else {
-                            tvTitlePromoHome.isGone = false
-                            ivForwardPromoHome.isGone = false
-                            svSliderHome.isGone = false
-                            shimmerLoadingSliderContainer.isGone = true
-                        }
+                        Log.d("TAG", "tes bool $loading")
+                        rvParentHome.isGone = loading
+                        shimmerLoadingSliderContainer.isGone = !loading
                     }
                 }
                 observeGetParentingLoading().observe(viewLifecycleOwner) {
                     it.getContentIfNotHandled()?.let { loading ->
-                        rvParentHome.isGone = loading
                         shimmerLoadingMedMomContainer.isGone = !loading
                     }
                 }

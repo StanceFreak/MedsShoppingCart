@@ -8,35 +8,75 @@
     android:layout_marginBottom="10dp"
     xmlns:tools="http://schemas.android.com/tools">
 
-    <TextView
-        android:id="@+id/tv_title_item_home_parent"
+    <RelativeLayout
+        android:id="@+id/rl_header_item_home_parent"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:id="@+id/tv_title_item_home_parent"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Obat-obatan"
+            android:textSize="16sp"
+            android:textColor="@color/black"
+            android:maxLines="1"
+            android:layout_marginStart="10dp"
+            android:ellipsize="end"
+            android:fontFamily="@font/epilogue_semibold_600"
+            android:layout_toStartOf="@id/tv_see_all_home_parent"/>
+
+        <TextView
+            android:id="@+id/tv_see_all_home_parent"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Lihat Semua"
+            android:textSize="16sp"
+            android:textColor="@color/light_green"
+            android:fontFamily="@font/barlow_bold"
+            android:layout_centerVertical="true"
+            android:layout_alignParentEnd="true"
+            android:layout_marginStart="5dp"
+            android:layout_marginEnd="20dp"/>
+
+    </RelativeLayout>
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/cv_slider_home_container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Obat-obatan"
-        android:textSize="16sp"
-        android:textColor="@color/black"
-        android:maxLines="1"
-        android:layout_marginStart="10dp"
-        android:ellipsize="end"
-        android:fontFamily="@font/epilogue_semibold_600"
-        android:layout_toStartOf="@id/iv_forward_item_home_parent"/>
+        app:cardCornerRadius="10dp"
+        android:layout_below="@id/rl_header_item_home_parent"
+        android:layout_marginTop="5dp"
+        app:cardUseCompatPadding="true"
+        app:cardElevation="5dp">
 
-    <ImageView
-        android:id="@+id/iv_forward_item_home_parent"
-        android:layout_width="24dp"
-        android:layout_height="24dp"
-        android:src="@drawable/ic_arrow_forward"
-        android:layout_alignParentEnd="true"
-        android:layout_marginStart="5dp"
-        android:layout_marginEnd="10dp"/>
+        <com.smarteist.autoimageslider.SliderView
+            android:id="@+id/sv_slider_home"
+            android:layout_width="match_parent"
+            android:layout_height="180dp"
+            app:sliderAutoCycleDirection="back_and_forth"
+            app:sliderAnimationDuration="1000"
+            app:sliderIndicatorAnimationDuration="1000"
+            app:sliderIndicatorEnabled="true"
+            app:sliderIndicatorGravity="center_horizontal|bottom"
+            app:sliderIndicatorMargin="10dp"
+            app:sliderIndicatorOrientation="horizontal"
+            app:sliderIndicatorPadding="3dp"
+            app:sliderIndicatorRadius="2dp"
+            app:sliderIndicatorSelectedColor="@color/dark_gray"
+            app:sliderIndicatorUnselectedColor="@color/french_gray"
+            app:sliderScrollTimeInSec="1"/>
+
+    </androidx.cardview.widget.CardView>
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rv_item_home_parent"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
-        android:layout_below="@id/tv_title_item_home_parent"
-        tools:listitem="@layout/item_list_medicine"
+        android:layout_below="@id/rl_header_item_home_parent"
+        tools:listitem="@layout/item_child_home_medicine"
         android:orientation="vertical"
         app:spanCount="2"
         app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"/>

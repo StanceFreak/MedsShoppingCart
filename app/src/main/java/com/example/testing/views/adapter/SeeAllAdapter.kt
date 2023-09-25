@@ -12,7 +12,7 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.example.testing.R
 import com.example.testing.data.api.model.response.MedicineList
-import com.example.testing.databinding.ItemListMedicineBinding
+import com.example.testing.databinding.ItemChildHomeMedicineBinding
 import com.example.testing.utils.CustomTypefaceSpan
 import com.squareup.picasso.Picasso
 import java.text.NumberFormat
@@ -39,7 +39,7 @@ class SeeAllAdapter : PagingDataAdapter<MedicineList, SeeAllAdapter.Recyclerview
 
     }
 
-    inner class RecyclerviewHolder (private val binding: ItemListMedicineBinding) : RecyclerView.ViewHolder(binding.root){
+    inner class RecyclerviewHolder (private val binding: ItemChildHomeMedicineBinding) : RecyclerView.ViewHolder(binding.root){
         fun bind(data: MedicineList) {
             binding.apply {
                 val font1 = ResourcesCompat.getFont(itemView.context, R.font.barlow_bold)
@@ -76,7 +76,7 @@ class SeeAllAdapter : PagingDataAdapter<MedicineList, SeeAllAdapter.Recyclerview
     }
 //
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerviewHolder {
-        val itemBinding = ItemListMedicineBinding.inflate(
+        val itemBinding = ItemChildHomeMedicineBinding.inflate(
             LayoutInflater.from(parent.context),
             parent,
             false

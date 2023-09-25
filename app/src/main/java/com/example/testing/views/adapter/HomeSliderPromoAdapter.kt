@@ -1,10 +1,13 @@
 package com.example.testing.views.adapter
 
+import android.os.Bundle
 import android.text.Spannable
 import android.text.SpannableStringBuilder
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.core.content.res.ResourcesCompat
+import androidx.navigation.findNavController
 import com.bumptech.glide.Glide
 import com.example.testing.R
 import com.example.testing.data.api.model.response.MedicineList
@@ -42,6 +45,11 @@ class HomeSliderPromoAdapter: SliderViewAdapter<HomeSliderPromoAdapter.SliderVie
                     tvNamePromoSlider.text = medicine.name
                 }
                 tvPricePromoSlider.text = ss
+                itemView.setOnClickListener {
+                    val bundle = Bundle()
+                    bundle.putString("slug", medicine.slug)
+                    itemView.findNavController().navigate(R.id.home_to_detail, bundle)
+                }
             }
         }
     }
@@ -65,6 +73,7 @@ class HomeSliderPromoAdapter: SliderViewAdapter<HomeSliderPromoAdapter.SliderVie
     }
 
     fun setData(dataList: List<MedicineList>) {
+        Log.e("TAG1", "data ges $dataList")
         this.promoList.apply {
             clear()
             addAll(dataList)

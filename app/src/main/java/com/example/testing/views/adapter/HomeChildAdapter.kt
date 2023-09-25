@@ -12,8 +12,8 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.testing.R
 import com.example.testing.data.api.model.response.ArticlesResponseItem
 import com.example.testing.data.api.model.response.MedicineList
-import com.example.testing.databinding.ItemHomeArticleChildBinding
-import com.example.testing.databinding.ItemListMedicineBinding
+import com.example.testing.databinding.ItemChildHomeArticleBinding
+import com.example.testing.databinding.ItemChildHomeMedicineBinding
 import com.example.testing.utils.CustomTypefaceSpan
 import com.squareup.picasso.Picasso
 import java.text.NumberFormat
@@ -33,7 +33,7 @@ class HomeChildAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
         const val art_type = 2
     }
 
-    inner class MedViewHolder (private val binding: ItemListMedicineBinding) : RecyclerView.ViewHolder(binding.root){
+    inner class MedViewHolder (private val binding: ItemChildHomeMedicineBinding) : RecyclerView.ViewHolder(binding.root){
         fun bind(data: MedicineList) {
             binding.apply {
                 val font1 = ResourcesCompat.getFont(itemView.context, R.font.barlow_bold)
@@ -69,7 +69,7 @@ class HomeChildAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
         }
     }
 
-    inner class ArtViewHolder (private val binding: ItemHomeArticleChildBinding) : RecyclerView.ViewHolder(binding.root){
+    inner class ArtViewHolder (private val binding: ItemChildHomeArticleBinding) : RecyclerView.ViewHolder(binding.root){
         fun bind(data: ArticlesResponseItem) {
             binding.apply {
                 val listCategories = ArrayList<String>()
@@ -104,7 +104,7 @@ class HomeChildAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         if (viewType == med_type) {
-            val itemBinding = ItemListMedicineBinding.inflate(
+            val itemBinding = ItemChildHomeMedicineBinding.inflate(
                 LayoutInflater.from(parent.context),
                 parent,
                 false
@@ -112,7 +112,7 @@ class HomeChildAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
             return MedViewHolder(itemBinding)
         }
         else {
-            val itemBinding = ItemHomeArticleChildBinding.inflate(
+            val itemBinding = ItemChildHomeArticleBinding.inflate(
                 LayoutInflater.from(parent.context),
                 parent,
                 false
@@ -122,7 +122,6 @@ class HomeChildAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
-
         holder.apply {
             if (typeList == med_type) {
                 val data = medDataList[position]
@@ -141,13 +140,11 @@ class HomeChildAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     }
 
     override fun getItemCount(): Int {
-        return if (typeList == med_type) {
-            min(this.medDataList.size, 2)
+        return when (typeList) {
+            med_type -> min(this.medDataList.size, 5)
+            art_type -> min(this.artDataList.size, 5)
+            else -> min(this.medDataList.size, 1)
         }
-        else {
-            min(this.artDataList.size, 5)
-        }
-//        return min(this.data.size, 5)
     }
 
     fun setDataMed(datalist: List<MedicineList>, type: Int) {

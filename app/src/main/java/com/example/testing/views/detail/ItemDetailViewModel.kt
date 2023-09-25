@@ -4,17 +4,11 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.asLiveData
-import androidx.lifecycle.liveData
 import androidx.lifecycle.viewModelScope
 import com.example.testing.data.api.model.response.MedicineDetail
-import com.example.testing.data.api.model.response.MedicineListModel
 import com.example.testing.data.api.repository.AppRepository
-import com.example.testing.data.api.repository.RemoteDataSource
-import com.example.testing.utils.Resource
 import com.example.testing.utils.SingleLiveEvent
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import javax.inject.Inject
 
 //@HiltViewModel
 //class ItemDetailViewModel @Inject constructor(

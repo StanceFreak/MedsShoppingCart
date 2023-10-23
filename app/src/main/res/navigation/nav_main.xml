@@ -19,6 +19,9 @@
         <action
             android:id="@+id/home_to_see_all"
             app:destination="@id/seeAllFragment" />
+        <action
+            android:id="@+id/home_to_see_all_category"
+            app:destination="@id/seeAllCategoryFragment" />
     </fragment>
     <fragment
         android:id="@+id/shoppingCartFragment"
@@ -107,5 +110,14 @@
         android:name="com.example.testing.views.confirmation.ShoppingConfirmationFragment"
         android:label="fragment_shopping_confirmation"
         tools:layout="@layout/fragment_shopping_confirmation" />
+    <fragment
+        android:id="@+id/seeAllCategoryFragment"
+        android:name="com.example.testing.views.seeall.SeeAllCategoryFragment"
+        android:label="fragment_see_all_category"
+        tools:layout="@layout/fragment_see_all_category" >
+        <action
+            android:id="@+id/see_all_category_to_see_all"
+            app:destination="@id/seeAllFragment" />
+    </fragment>
 
 </navigation>

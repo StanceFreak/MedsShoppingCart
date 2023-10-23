@@ -5,6 +5,7 @@ import com.example.testing.views.cart.ShoppingCartViewModel
 import com.example.testing.views.detail.ItemDetailViewModel
 import com.example.testing.views.home.HomeViewModel
 import com.example.testing.views.login.LoginViewModel
+import com.example.testing.views.seeall.SeeAllCategoryViewModel
 import com.example.testing.views.seeall.SeeAllViewModel
 import com.example.testing.views.splash.SplashViewModel
 import com.example.testing.views.wishlist.WishlistViewModel
@@ -19,4 +20,5 @@ val viewModelModule = module {
     viewModel { ShoppingCartViewModel(get()) }
     viewModel { WishlistViewModel(get()) }
     viewModel { SeeAllViewModel(get()) }
+    viewModel { SeeAllCategoryViewModel(get()) }
 }

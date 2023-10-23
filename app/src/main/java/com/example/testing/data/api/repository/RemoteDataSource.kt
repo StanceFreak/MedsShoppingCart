@@ -1,6 +1,7 @@
 package com.example.testing.data.api.repository
 
 import com.example.testing.data.api.model.response.ArticlesResponse
+import com.example.testing.data.api.model.response.CategoryListResponse
 import com.example.testing.data.api.model.response.MedicineDetail
 import com.example.testing.data.api.model.response.MedicineListModel
 import com.example.testing.data.api.network.ApiHelper
@@ -13,6 +14,10 @@ class RemoteDataSource(
 
     suspend fun getMedicineByCategory(path: String, page: Int) : Response<MedicineListModel> {
         return apiHelper.getMedicineByCategory(path, page)
+    }
+
+    suspend fun getCategoryList(): Response<CategoryListResponse> {
+        return apiHelper.getCategoryList()
     }
 
     suspend fun getArticlesTrending() : Response<ArticlesResponse> {

@@ -6,6 +6,7 @@ import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import androidx.paging.liveData
 import com.example.testing.data.api.model.response.ArticlesResponse
+import com.example.testing.data.api.model.response.CategoryListResponse
 import com.example.testing.data.api.model.response.MedicineDetail
 import com.example.testing.data.api.model.response.MedicineList
 import com.example.testing.data.api.model.response.MedicineListModel
@@ -19,6 +20,10 @@ class AppRepository(
 
     suspend fun getMedicineByCategory(path: String, page: Int) : Response<MedicineListModel> {
         return remoteDataSource.getMedicineByCategory(path, page)
+    }
+
+    suspend fun getCategoryList(): Response<CategoryListResponse> {
+        return remoteDataSource.getCategoryList()
     }
 
     suspend fun getArticlesTrending() : Response<ArticlesResponse> {

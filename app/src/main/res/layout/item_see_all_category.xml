@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="10dp"
+    android:orientation="horizontal">
+
+    <de.hdodenhof.circleimageview.CircleImageView
+        android:id="@+id/iv_thumb_see_all_category"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:src="@drawable/ic_launcher_background"/>
+
+    <TextView
+        android:id="@+id/tv_name_see_all_category"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="10dp"
+        android:layout_gravity="center_vertical"
+        android:text="Kontrasepsi &amp; Hormon"
+        android:textSize="16sp"
+        android:textColor="@color/midnight_green"
+        android:fontFamily="@font/barlow_semibold"
+        android:maxLines="1"
+        android:ellipsize="end"/>
+
+</LinearLayout>

@@ -1,6 +1,7 @@
 package com.example.testing.data.api.network
 
 import com.example.testing.data.api.model.response.ArticlesResponse
+import com.example.testing.data.api.model.response.CategoryListResponse
 import com.example.testing.data.api.model.response.MedicineDetail
 import com.example.testing.data.api.model.response.MedicineListModel
 import retrofit2.Response
@@ -14,6 +15,9 @@ interface ApiService {
         @Path(value = "path", encoded = true) path: String,
         @Path(value = "page", encoded = true) page: Int
     ): Response<MedicineListModel>
+
+    @GET("/medicine/categories")
+    suspend fun getCategoryList(): Response<CategoryListResponse>
 
     @GET("/articles-trending")
     suspend fun getArticlesTrending(): Response<ArticlesResponse>

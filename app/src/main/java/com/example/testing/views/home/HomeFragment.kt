@@ -88,6 +88,16 @@ class HomeFragment : Fragment() {
                         homeParentAdapter.setData(parentData, 1)
                     }
                 }
+                observeGetCategoryListSuccess().observe(viewLifecycleOwner) {
+                    it.getContentIfNotHandled()?.let { response ->
+                        if (response.first == true) {
+                            responseData.add(HomeParentResponse("Kategori lainnya", null, 4,  null, null))
+                            parentData.clear()
+                            parentData.addAll(responseData)
+                            homeParentAdapter.setData(parentData, 4)
+                        }
+                    }
+                }
                 observeGetDiabetSuccess().observe(viewLifecycleOwner) {
                     it.getContentIfNotHandled()?.let { response ->
                         responseData.add(HomeParentResponse("Perawatan Diabetes", "diabetes-medicine", 1,  response.medicineList, null))
@@ -114,6 +124,11 @@ class HomeFragment : Fragment() {
                 observeGetParentingLoading().observe(viewLifecycleOwner) {
                     it.getContentIfNotHandled()?.let { loading ->
                         shimmerLoadingMedMomContainer.isGone = !loading
+                    }
+                }
+                observeGetCategoryListLoading().observe(viewLifecycleOwner) {
+                    it.getContentIfNotHandled()?.let { loading ->
+                        shimmerLoadingSliderContainer.isGone = !loading
                     }
                 }
                 observeGetDiabetLoading().observe(viewLifecycleOwner) {

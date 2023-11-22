@@ -27,6 +27,7 @@ class ShoppingCartFragment : Fragment(), ShoppingCartAdapter.OnRetrieveData {
     private val viewModel: ShoppingCartViewModel by inject()
     private var totalQty = 0
     private var totalPrice = 0
+    private var checkedList = ArrayList<String>()
     private val dataList : MutableList<CartList> = arrayListOf()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -39,19 +40,6 @@ class ShoppingCartFragment : Fragment(), ShoppingCartAdapter.OnRetrieveData {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-//        val menuHost: MenuHost = requireActivity()
-//        menuHost.addMenuProvider(object : MenuProvider {
-//            override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
-//                menuInflater.inflate(R.menu.menu_home)
-//            }
-//
-//            override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
-//                return when (menuItem.itemId) {
-//                    R.id.
-//                }
-//            }
-//
-//        })
         binding = FragmentShoppingCartBinding.inflate(inflater, container, false)
         return binding.root
     }
@@ -71,6 +59,8 @@ class ShoppingCartFragment : Fragment(), ShoppingCartAdapter.OnRetrieveData {
     }
 
     private fun setupRecycler() {
+        var tempQuantity = 0
+        var tempPrice = 0
         db = FirebaseDatabase.getInstance(BuildConfig.FIREBASE_URL)
         ref = db.getReference("users")
         cartAdapter = ShoppingCartAdapter(this)
@@ -81,6 +71,7 @@ class ShoppingCartFragment : Fragment(), ShoppingCartAdapter.OnRetrieveData {
                     LinearLayoutManager.VERTICAL,
                     false)
                 adapter = cartAdapter
+                isNestedScrollingEnabled = false
             }
             viewModel.getUserData().observe(viewLifecycleOwner) { uid ->
                 sfCartContentLoading.isGone = false
@@ -92,8 +83,6 @@ class ShoppingCartFragment : Fragment(), ShoppingCartAdapter.OnRetrieveData {
                         if (snapshot.exists()) {
                             val localeID =  Locale("in", "ID")
                             val numberFormat = NumberFormat.getCurrencyInstance(localeID)
-                            var tempQuantity = 0
-                            var tempPrice = 0
                             cartAdapter.setUid(uid)
                             dataList.clear()
                             for (ds in snapshot.children) {
@@ -109,20 +98,29 @@ class ShoppingCartFragment : Fragment(), ShoppingCartAdapter.OnRetrieveData {
                             }
                             cartAdapter.apply {
                                 Log.d("tes fb", dataList.toString())
+                                Log.d("tes fb size", dataList.size.toString())
                                 setData(dataList)
-                                totalPrice = getTotalPrice(dataList)
                                 binding.apply {
-                                    cartCbSelectAll.setOnCheckedChangeListener { p0, isChecked ->
+                                    cartCbSelectAll.setOnCheckedChangeListener { _, isChecked ->
                                         if (isChecked) {
-                                            cartAdapter.getSelectAllState(true)
-                                            cartBtnCheckout.text = "Beli (${totalQty})"
+                                            for (i in 0 until dataList.size) {
+                                                checkedList.add(dataList[i].slug!!)
+                                            }
+                                            Log.d("tes value list add all", checkedList.toString())
+                                            totalQty = dataList.sumOf { it.quantity!! }
+                                            totalPrice = getTotalPrice(dataList)
+                                            Log.d("tes value", "$totalQty & $totalPrice")
+                                            cartAdapter.getSelectAllState(true, checkedList, totalQty, totalPrice)
+                                            cartBtnCheckout.text = "Beli ($totalQty)"
                                             cartTotalPrice.text = numberFormat.format(totalPrice)
                                                 .replace("Rp", "Rp ")
                                                 .replace(",00", "")
                                         } else {
-                                            cartAdapter.getSelectAllState(false)
+                                            checkedList.clear()
+                                            Log.d("tes value list remove all", checkedList.toString())
+                                            cartAdapter.getSelectAllState(false, checkedList, 0, 0)
                                             binding.cartBtnCheckout.text = "Beli (0)"
-                                            cartTotalPrice.setText(R.string.product_price)
+                                            binding.cartTotalPrice.text = "-"
                                         }
                                     }
                                 }
@@ -139,27 +137,20 @@ class ShoppingCartFragment : Fragment(), ShoppingCartAdapter.OnRetrieveData {
 
     }
 
-    override fun checkedItemsSize(size: Int, price: Int) {
+    override fun checkedItems(qty: Int, price: Int) {
         val localeID =  Locale("in", "ID")
         val numberFormat = NumberFormat.getCurrencyInstance(localeID)
-        if (size > 0 && price > 0) {
-            totalQty = size
+        if (qty > 0 && price > 0) {
+            totalQty = qty
             totalPrice = price
             binding.cartBtnCheckout.text = "Beli (${totalQty})"
             binding.cartTotalPrice.text = numberFormat.format(totalPrice)
                 .replace("Rp", "Rp ")
                 .replace(",00", "")
-            Log.d("size", size.toString())
         }
-//        if (price > 0) {
-//            itemPrice = price
-//            binding.cartTotalPrice.text = numberFormat.format(itemPrice)
-//                .replace("Rp", "Rp ")
-//                .replace(",00", "")
-//        }
         else {
             binding.cartBtnCheckout.text = "Beli (0)"
-            binding.cartTotalPrice.setText(R.string.product_price)
+            binding.cartTotalPrice.text = "-"
         }
     }
 

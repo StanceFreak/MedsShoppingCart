@@ -2,6 +2,7 @@ package com.example.testing.views.home
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
 import com.example.testing.data.api.model.response.ArticlesResponse
 import com.example.testing.data.api.model.response.CategoryListResponse
@@ -119,14 +120,8 @@ class HomeViewModel(
         }
     }
 
-//    fun getPenawaranSpecialMedicine() = liveData(Dispatchers.IO) {
-//        emit(Resource.loading(data = null))
-//        try {
-//            emit(Resource.success(data = repo.getPenawaranSpecialMedicine()))
-//        }
-//        catch (e: Exception) {
-//            emit(Resource.error(data = null, message = e.message ?: "Error Occured!"))
-//        }
-//    }
+    fun getUserData(): LiveData<String> {
+        return repo.getUserData().asLiveData()
+    }
 
 }
